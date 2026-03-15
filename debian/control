@@ -1,0 +1,35 @@
+Source: soplos-plymouth-manager
+Section: admin
+Priority: optional
+Maintainer: Sergi Perich <info@soploslinux.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-setuptools
+
+Package: soplos-plymouth-manager
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-gi (>= 3.0.0),
+         python3-psutil (>= 5.0.0),
+         python3-pil | python3-pillow,
+         python3-xdg,
+         python3-dbus,
+         gir1.2-gtk-3.0,
+         plymouth,
+         plymouth-x11,
+         polkit | policykit-1-gnome | policykit-1,
+         scrot | imagemagick,
+         procps,
+         tar,
+         unzip
+Description: Soplos Plymouth Manager
+ A graphical tool to manage Plymouth boot splash themes in SOPLOS Linux.
+ Features include:
+  * List installed Plymouth themes
+  * Preview themes
+  * Install new themes from archives
+  * Apply themes with one click
+  * Modern and intuitive interface
+  * Support for multiple languages

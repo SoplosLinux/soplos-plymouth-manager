@@ -1,0 +1,66 @@
+.TH "SOPLOS-PLYMOUTH-MANAGER" "1" "2026-03-15" "Soplos Linux" "User Commands"
+.SH NAME
+soplos-plymouth-manager \- Advanced graphical Plymouth theme manager
+.SH SYNOPSIS
+.B soplos-plymouth-manager
+.SH DESCRIPTION
+.B soplos-plymouth-manager
+is a comprehensive GTK3 graphical manager for Plymouth boot splash themes.
+It provides an intuitive interface for:
+.IP \[bu] 2
+Listing and selecting installed Plymouth themes.
+.IP \[bu]
+Generating and viewing theme previews.
+.IP \[bu]
+Installing new themes from compressed archives (.tar.gz, .zip).
+.IP \[bu]
+Applying themes and automatically updating initramfs using Dracut.
+.IP \[bu]
+Removing unwanted themes from the system.
+.P
+The application requires root privileges for system-wide changes and uses pkexec for elevation.
+It is fully compatible with XFCE, GNOME, and KDE Plasma on both X11 and Wayland.
+.SH OPTIONS
+The application has no command-line options. All management is performed through the graphical user interface.
+.SH KEYBOARD SHORTCUTS
+.TP
+.B Ctrl+Q
+Quit the application.
+.TP
+.B F5 / Ctrl+R
+Refresh the theme gallery.
+.TP
+.B Ctrl+A
+Apply the currently selected theme.
+.TP
+.B Ctrl+P
+Preview the currently selected theme.
+.TP
+.B Ctrl+I
+Open the theme installation dialog.
+.TP
+.B Delete
+Remove the currently selected theme.
+.SH FILES
+.TP
+.I /usr/share/plymouth/themes/
+The primary directory where Plymouth themes are installed.
+.TP
+.I /etc/plymouth/plymouthd.conf
+Main Plymouth configuration file.
+.TP
+.I /usr/share/soplos-plymouth-manager/
+Application resources and assets directory.
+.SH AUTHOR
+Written by Sergi Perich <info@soploslinux.com> for the Soplos Linux project.
+.SH COPYRIGHT
+Copyright \(co 2026 Sergi Perich.
+License: GPL-3.0-or-later <https://www.gnu.org/licenses/gpl-3.0.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH SEE ALSO
+.BR plymouth (8),
+.BR dracut (8),
+.BR soplos-grub-editor (1),
+.BR soplos-welcome (1)

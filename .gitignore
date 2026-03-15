@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+plymouth-manager.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+plan.txt
+/tmp/
+.gemini/
+.antigravity/

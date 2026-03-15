@@ -1,0 +1,36 @@
+[Desktop Entry]
+Version=2.0.0
+Type=Application
+Name=Soplos Plymouth Manager
+Name[es]=Gestor Plymouth Soplos
+Name[en]=Soplos Plymouth Manager
+Name[fr]=Gestionnaire Plymouth Soplos
+Name[pt]=Gerenciador Plymouth Soplos
+Name[de]=Soplos Plymouth-Manager
+Name[it]=Gestore Plymouth Soplos
+Name[ru]=Менеджер Plymouth Soplos
+Name[ro]=Manager Plymouth Soplos
+
+Comment=Plymouth theme manager for Soplos Linux
+Comment[es]=Gestor de temas Plymouth para Soplos Linux
+Comment[en]=Plymouth theme manager for Soplos Linux
+Comment[fr]=Gestionnaire de thèmes Plymouth pour Soplos Linux
+Comment[pt]=Gerenciador de temas Plymouth para Soplos Linux
+Comment[de]=Plymouth-Manager für Soplos Linux
+Comment[it]=Gestore dei temi Plymouth per Soplos Linux
+Comment[ru]=Менеджер тем Plymouth для Soplos Linux
+Comment[ro]=Manager teme Plymouth pentru Soplos Linux
+
+X-GNOME-Application-ID=com.soplos.plymouthmanager
+X-AppStream-Metadata=/usr/share/metainfo/com.soplos.plymouthmanager.metainfo.xml
+
+Exec=soplos-plymouth-manager
+Icon=com.soplos.plymouthmanager
+Terminal=false
+OnlyShowIn=XFCE;
+X-XfcePluggable=true
+Categories=XFCE;GTK;Settings;DesktopSettings;X-XFCE-SettingsDialog;X-XFCE-SystemSettings;
+Keywords=plymouth;boot;splash;theme;themes;boot-splash;customize;soplos;
+StartupNotify=true
+StartupWMClass=com.soplos.plymouthmanager
+X-GNOME-SingleWindow=true

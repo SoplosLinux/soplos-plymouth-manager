@@ -1,0 +1,49 @@
+#!/bin/bash
+# Script generado automáticamente por Soplos Packager
+# Establecer explícitamente el WM_CLASS para Docklike y otros docks
+export WMCLASS="org.soplos.plymouthmanager"
+
+# Si estamos en GTK, podríamos usar GDK_STARTUP_NOTIFICATION_ID
+export GDK_STARTUP_NOTIFICATION_ID="${STARTUP_ID:-0}"
+
+# Lanzar el programa con el ID de aplicación correcto
+cd /usr/share/soplos-plymouth-manager
+
+exec python3 -c "
+import sys
+import os
+sys.path.insert(0, '/usr/share/soplos-plymouth-manager')
+os.environ['GDK_STARTUP_ID'] = '${GDK_STARTUP_NOTIFICATION_ID}'
+os.environ['WMCLASS'] = 'com.soplos.plymouthmanager'
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GLib, Gdk
+
+# Establecer el nombre de la aplicación antes de importar módulos
+GLib.set_prgname('com.soplos.plymouthmanager')
+GLib.set_application_name('soplos-plymouth-manager')
+Gtk.Window.set_default_icon_name('com.soplos.plymouthmanager')
+if hasattr(Gdk, 'set_program_class'):
+    Gdk.set_program_class('com.soplos.plymouthmanager')
+
+# Importar y ejecutar el programa principal
+import main
+try:
+    if hasattr(main, 'main'):
+        sys.exit(main.main())
+    else:
+        # Buscar una función que pueda ser el punto de entrada
+        for attr_name in dir(main):
+            if attr_name.lower() in ['main', 'run', 'start']:
+                attr = getattr(main, attr_name)
+                if callable(attr):
+                    sys.exit(attr())
+                    break
+        else:
+            # Si no hay función main, simplemente importar es suficiente
+            pass
+except Exception as e:
+    print(f'Error al ejecutar main.py: {e}')
+    sys.exit(1)
+"

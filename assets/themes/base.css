@@ -1,0 +1,30 @@
+/* Base Theme for Soplos Plymouth Manager - GTK3 */
+/* This file contains shared structural styles */
+
+.soplos-window {
+    background-color: @theme_bg_color;
+}
+
+.soplos-content {
+    margin: 10px;
+}
+
+.status-bar {
+    border-top: 1px solid @borders;
+    padding: 8px 12px;
+}
+
+/* Visual Gallery Spacing */
+.flowbox-container {
+    padding: 20px;
+}
+
+/* Scroll Smoothing */
+scrolledwindow {
+    transition: all 0.3s ease;
+}
+
+/* Status Labels */
+.status-label {
+    font-size: 14px;
+}

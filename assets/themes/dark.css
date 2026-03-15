@@ -1,0 +1,262 @@
+/* Dark Theme for Soplos Plymouth Manager - GTK3 CSS */
+/* Real Soplos v2.0 Standard - Synchronized with suite */
+
+/* ============================================ */
+/* VARIABLES (Soplos Brand Colors)            */
+/* ============================================ */
+@define-color soplos_orange #ff8800;
+@define-color soplos_orange_hover #ff9922;
+@define-color soplos_dark_bg #2b2b2b;
+@define-color soplos_darker_bg #1e1e1e;
+@define-color soplos_light_text #ffffff;
+@define-color soplos_border #3c3c3c;
+@define-color soplos_error #e74c3c;
+@define-color soplos_insensitive_fg #888888;
+@define-color soplos_unfocused_bg #2b2b2b;
+
+/* GTK Named Colors Mapping */
+@define-color theme_bg_color @soplos_dark_bg;
+@define-color theme_fg_color @soplos_light_text;
+@define-color theme_base_color @soplos_darker_bg;
+@define-color theme_text_color @soplos_light_text;
+@define-color theme_selected_bg_color @soplos_orange;
+@define-color theme_selected_fg_color #000000;
+@define-color borders @soplos_border;
+@define-color error_color @soplos_error;
+@define-color insensitive_fg_color @soplos_insensitive_fg;
+@define-color theme_unfocused_bg_color @soplos_unfocused_bg;
+@define-color hover_overlay rgba(255, 255, 255, 0.05);
+
+/* ============================================ */
+/* BASE STYLES                                 */
+/* ============================================ */
+
+/* Application Window */
+window, 
+.soplos-window,
+.soplos-welcome-window {
+    background-color: @soplos_dark_bg;
+    color: @soplos_light_text;
+}
+
+/* Notebook and Tabs - STANDARDIZED Soplos v2.0 */
+notebook {
+    background-color: @soplos_darker_bg;
+    border: none;
+}
+
+notebook > header {
+    background-color: @soplos_darker_bg;
+    border-bottom: 1px solid @soplos_border;
+    padding: 0;
+    margin: 0;
+}
+
+notebook > header tabs {
+    margin: 0;
+    padding: 0;
+}
+
+notebook > header tab {
+    background-color: transparent;
+    color: #aaaaaa;
+    padding: 10px 25px;
+    border: none;
+    border-right: 1px solid @hover_overlay;
+}
+
+notebook > header tab:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+notebook > header tab:checked {
+    color: @soplos_orange;
+    background-color: @soplos_dark_bg;
+    border-top: 3px solid @soplos_orange;
+    font-weight: bold;
+}
+
+notebook stack {
+    background-color: @soplos_dark_bg;
+    padding: 0;
+}
+
+/* Main Content Area */
+.soplos-content {
+    padding: 20px;
+    background-color: @theme_base_color;
+    border-radius: 8px;
+}
+
+/* HeaderBar */
+headerbar,
+.titlebar {
+    background-color: @soplos_darker_bg;
+    color: @soplos_light_text;
+    border-bottom: 1px solid @soplos_border;
+    box-shadow: none;
+    min-height: 46px;
+}
+
+headerbar button.titlebutton {
+    color: @soplos_light_text;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+headerbar button.titlebutton:hover {
+    background-color: #444444;
+}
+
+headerbar button.titlebutton.close:hover {
+    background-color: @soplos_error;
+    color: white;
+}
+
+/* Buttons */
+button {
+    background-image: none;
+    background-color: #333333;
+    color: @soplos_light_text;
+    border: 1px solid @soplos_border;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: bold;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+button:hover {
+    background-color: #444444;
+    border-color: @soplos_orange;
+    color: @soplos_light_text;
+}
+
+button:active {
+    background-color: @soplos_orange;
+    color: #000000;
+}
+
+/* Suggested Action (Orange) */
+button.suggested-action {
+    background-color: @soplos_orange;
+    color: #000000;
+    border: 1px solid @soplos_orange_hover;
+}
+
+button.suggested-action:hover {
+    background-color: @soplos_orange_hover;
+    border-color: @soplos_orange_hover;
+}
+
+/* Destructive Action (Red) */
+button.destructive-action,
+button.soplos-button-danger {
+    background-color: @soplos_error;
+    color: #ffffff;
+    border: 1px solid #c0392b;
+}
+
+button.destructive-action:hover,
+button.soplos-button-danger:hover {
+    background-color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+/* Soplos Specific Button Classes */
+.soplos-button-primary {
+    background-color: @soplos_orange;
+    color: #000000;
+}
+
+.soplos-button-secondary {
+    background-color: #333333;
+    color: @soplos_light_text;
+}
+
+.soplos-link-button {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.soplos-link-button:hover {
+    background-color: @hover_overlay;
+    border-color: @soplos_border;
+}
+
+/* Switch Styling */
+switch {
+    background-color: #333333;
+    border: 1px solid @soplos_border;
+    border-radius: 12px;
+}
+
+switch:checked {
+    background-color: @soplos_orange;
+    border-color: @soplos_orange;
+}
+
+switch slider {
+    background-color: #eeeeee;
+}
+
+/* CARDS - Theme Visual Gallery */
+.theme-card {
+    border: 1px solid @soplos_border;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    padding: 4px;
+    transition: all 0.2s ease;
+}
+
+.theme-card:hover {
+    background-color: #333333;
+    border-color: @soplos_orange;
+}
+
+.theme-card-selected {
+    background-color: @soplos_dark_bg;
+    border: 2px solid @soplos_orange;
+    box-shadow: 0 0 8px alpha(@soplos_orange, 0.3);
+}
+
+.theme-preview-box {
+    border-radius: 4px;
+    background-color: #000;
+}
+
+.theme-card-label {
+    font-weight: bold;
+    color: @soplos_light_text;
+    padding: 4px;
+}
+
+/* Progress Bar */
+progressbar trough {
+    background-color: @soplos_darker_bg;
+    border: 1px solid @soplos_border;
+    border-radius: 4px;
+}
+
+progressbar progress {
+    background-color: @soplos_orange;
+    border-radius: 4px;
+}
+
+/* Labels and Texts */
+.dim-label {
+    color: @soplos_insensitive_fg;
+}
+
+label {
+    color: @soplos_light_text;
+}
+
+/* Scrolled Windows */
+scrolledwindow,
+scrolledwindow viewport {
+    background-color: transparent;
+}

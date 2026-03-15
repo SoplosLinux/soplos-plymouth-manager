@@ -1,0 +1,7 @@
+PyGObject>=3.0.0; platform_system == "Linux"
+psutil>=5.0.0
+Pillow>=6.0.0
+pyxdg>=0.26
+dbus-python>=1.2.0
+setuptools>=40.0.0
+# Nota: plymouth-x11 es una dependencia del sistema, no de Python
