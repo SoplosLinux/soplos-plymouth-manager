@@ -33,6 +33,7 @@ class ThemeCard(Gtk.Button):
         self.theme_info = theme_info
         self.set_relief(Gtk.ReliefStyle.NONE)
         self.get_style_context().add_class('theme-card')
+        self.connect('clicked', self._on_clicked)
         
         # Minimalist thumbnails with responsive base size
         self.set_size_request(160, 130)
@@ -74,6 +75,14 @@ class ThemeCard(Gtk.Button):
         vbox.pack_start(label, False, False, 0)
 
         self.show_all()
+
+    def _on_clicked(self, btn):
+        """Proxy click to parent FlowBoxChild for proper selection."""
+        parent = self.get_parent()
+        if isinstance(parent, Gtk.FlowBoxChild):
+            flowbox = parent.get_parent()
+            flowbox.select_child(parent)
+            flowbox.emit('child-activated', parent)
 
     def set_selected(self, selected: bool):
         """Toggle selected visual state."""
@@ -320,19 +329,32 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
 
     # --- UI Event Handlers ---
 
+    def _on_selection_changed(self, flowbox):
+        # We handle selection mainly in _on_card_activated for Gtk.Button children
+        pass
+
     def _on_card_activated(self, flowbox, child):
+        # Force FlowBox selection
+        flowbox.select_child(child)
+        
+        # Deselect old card visual state
         if self.selected_card:
             self.selected_card.set_selected(False)
+        
+        # Select new card visual state
         self.selected_card = child.get_child()
         self.selected_card.set_selected(True)
-        logger.debug(f"Card selected: {self.selected_card.theme_info['name']}")
+        
+        logger.info(f"Theme selected: {self.selected_card.theme_info['name']}")
 
     def _on_apply_theme(self, btn):
         if not self.selected_card: return
         theme = self.selected_card.theme_info
         self._set_ui_state(_("Applying {name}…").format(name=theme['name']), pulse=True)
+        def progress_cb(fraction):
+            GLib.idle_add(self.progress_bar.set_fraction, fraction)
         def worker():
-            success = self.plymouth_manager.set_theme(theme['name'])
+            success = self.plymouth_manager.set_theme(theme['name'], progress_callback=progress_cb)
             GLib.idle_add(self._on_apply_finished, success)
         threading.Thread(target=worker, daemon=True).start()
 
@@ -341,8 +363,31 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
 
     def _on_preview_theme(self, btn):
         if not self.selected_card: return
-        # Logic for simulator (skipped for brevity, but stays similar)
-        logger.info(f"Previewing {self.selected_card.theme_info['name']}")
+        theme = self.selected_card.theme_info
+        
+        if not theme.get('is_graphical', True):
+            self._set_ui_state(_("Theme is text-only"), show_revealer=False)
+            dialog = Gtk.MessageDialog(
+                parent=self, modal=True, message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.OK, text=_("Text-only Theme")
+            )
+            dialog.format_secondary_text(_("This theme handles text only and cannot be previewed in a window."))
+            dialog.run()
+            dialog.destroy()
+            return
+
+        self._set_ui_state(_("Generating Preview for {name}…").format(name=theme['name']), pulse=True)
+        def worker():
+            path = self.plymouth_manager.generate_preview(theme['name'])
+            GLib.idle_add(self._on_preview_finished, path)
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_preview_finished(self, path):
+        if path:
+            self._set_ui_state(_("Preview generated"), show_revealer=False)
+            self._load_themes_async() # Refresh to show new thumbnail
+        else:
+            self._set_ui_state(_("Error generating preview"), show_revealer=False)
 
     def _on_install_theme(self, btn):
         dialog = Gtk.FileChooserDialog(
@@ -353,12 +398,20 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
             path = dialog.get_filename()
             dialog.destroy()
             self._set_ui_state(_("Installing…"), pulse=True)
+            def progress_cb(fraction):
+                GLib.idle_add(self.progress_bar.set_fraction, fraction)
             def worker():
-                res = self.plymouth_manager.install_theme(path)
-                GLib.idle_add(lambda: self._load_themes_async())
+                success, msg = self.plymouth_manager.install_theme(path, progress_callback=progress_cb)
+                GLib.idle_add(self._on_install_finished, success, msg)
             threading.Thread(target=worker, daemon=True).start()
         else:
             dialog.destroy()
+
+    def _on_install_finished(self, success, msg):
+        self._set_ui_state(msg, show_revealer=True)
+        # Always hide after delay, and refresh
+        GLib.timeout_add_seconds(4, lambda: self._set_ui_state("", show_revealer=False))
+        self._load_themes_async()
 
     def _on_remove_theme(self, btn):
         if not self.selected_card: return

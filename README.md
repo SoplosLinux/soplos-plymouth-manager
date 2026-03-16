@@ -23,7 +23,9 @@ A GTK3 graphical interface to manage Plymouth boot splash themes: preview, insta
 - 🌍 Multi-language support (8 languages).
 - 🖥️ Compatible with XFCE, Plasma and GNOME.
 - 🌊 **Full support for Wayland and X11**.
-- 🎨 **Automatic system theme detection**.
+- 🎨 **Automatic system theme detection** (No more hardcoded theme lists).
+- 📦 **Robust installer** with deep recursive search for nested themes.
+- ⏳ **Real-time progress reporting** for background system updates.
 
 ## 🛠️ Requirements
 
@@ -122,8 +124,11 @@ Developed by Sergi Perich
 
 ## 📦 Versions
 
-### v2.0.0 (2026-03-15)
-- Complete refactoring to modular architecture (core/, ui/, utils/, config/).
+### v2.0.0 (2026-03-16)
+- Complete refactoring to modular architecture.
+- Full dynamic theme detection (Eliminated hardcoded names/modules).
+- Robust theme installer with deep search for nested archives.
+- Enhanced progress bars and real-time feedback.
 - Advanced support for Wayland and Plasma/GNOME environments.
 - Responsive interface and standard Soplos keyboard shortcuts.
 - Native Dracut support.

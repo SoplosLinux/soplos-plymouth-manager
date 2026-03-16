@@ -103,11 +103,11 @@
     <locale>ro</locale>
   </translation>
 
-  <launchable type="desktop-id">com.soplos.plymouthmanager.desktop</launchable>
+  <launchable type="desktop-id">org.soplos.plymouthmanager.desktop</launchable>
 
-  <icon type="stock">soplos-plymouth-manager</icon>
+  <icon type="stock">org.soplos.plymouthmanager</icon>
   <icon type="remote">
-    <url>https://raw.githubusercontent.com/SoplosLinux/soplos-plymouth-manager/main/assets/icons/com.soplos.plymouthmanager.png</url>
+    <url>https://raw.githubusercontent.com/SoplosLinux/soplos-plymouth-manager/main/assets/icons/org.soplos.plymouthmanager.png</url>
   </icon>
 
   <screenshots>
@@ -158,16 +158,16 @@
   </provides>
 
   <releases>
-    <release version="2.0.0" date="2026-03-15">
+    <release version="2.0.0" date="2026-03-16">
       <description>
-        <p>Version 2.0.0 - Complete refactoring with modular architecture, advanced Wayland support (GNOME/KDE/XFCE), responsive UI and Soplos standard shortcuts.</p>
-        <p xml:lang="es">Versión 2.0.0 - Refactorización completa con arquitectura modular, soporte avanzado para Wayland (GNOME/KDE/XFCE), interfaz responsiva y atajos de teclado estándar Soplos.</p>
-        <p xml:lang="fr">Version 2.0.0 - Refactorisation complète avec architecture modulaire, support Wayland avancé (GNOME/KDE/XFCE), interface réactive et raccourcis standard Soplos.</p>
-        <p xml:lang="pt">Versão 2.0.0 - Refatoração completa com arquitetura modular, suporte avançado para Wayland (GNOME/KDE/XFCE), interface responsiva e atalhos padrão Soplos.</p>
-        <p xml:lang="de">Version 2.0.0 - Vollständige Refaktorierung mit modularer Architektur, erweiterter Wayland-Unterstützung (GNOME/KDE/XFCE), responsiver UI und Soplos-Standard-Tastenkombinationen.</p>
-        <p xml:lang="it">Versione 2.0.0 - Refactoring completo con architettura modulare, supporto Wayland avanzato (GNOME/KDE/XFCE), interfaccia reattiva e scorciatoie standard Soplos.</p>
-        <p xml:lang="ru">Версия 2.0.0 - Полный рефакторинг с модульной архитектурой, расширенной поддержкой Wayland (GNOME/KDE/XFCE), адаптивным интерфейсом и стандартными горячими клавишами Soplos.</p>
-        <p xml:lang="ro">Versiunea 2.0.0 - Refactorizare completă cu arhitectură modulară, suport avansat pentru Wayland (GNOME/KDE/XFCE), interfață receptivă și comenzi rapide standard Soplos.</p>
+        <p>Version 2.0.0 - Complete modular architecture refactor with dynamic theme detection (no hardcoded lists), robust installer for nested archives, enhanced progress reporting, and full Wayland support.</p>
+        <p xml:lang="es">Versión 2.0.0 - Refactorización modular completa con detección dinámica de temas (sin listas fijas), instalador robusto para archivos anidados, reporte de progreso mejorado y soporte total para Wayland.</p>
+        <p xml:lang="fr">Version 2.0.0 - Refonte modulaire complète avec détection dynamique des thèmes (pas de listes codées en dur), installateur robuste pour les archives imbriquées, rapport de progression amélioré et support Wayland complet.</p>
+        <p xml:lang="pt">Versão 2.0.0 - Refatoração modular completa com detecção dinâmica de temas (sem listas fixas), instalador robusto para arquivos aninhados, relatório de progresso aprimorado e suporte total para Wayland.</p>
+        <p xml:lang="de">Version 2.0.0 - Vollständige modulare Refaktorierung mit dynamischer Themenerkennung (keine hardcodierten Listen), robuster Installer für verschachtelte Archive, verbesserte Fortschrittsanzeige und volle Wayland-Unterstützung.</p>
+        <p xml:lang="it">Versione 2.0.0 - Refactoring modulare completo con rilevamento dinamico dei temi (senza liste fisse), installatore robusto per archivi nidificati, report di avanzamento migliorato e supporto Wayland completo.</p>
+        <p xml:lang="ru">Версия 2.0.0 - Полный модульный рефакторинг с динамическим обнаружением тем (без захардкорженных списков), надежным установщиком для вложенных архивов, улучшенным отображением прогресса и полной поддержкой Wayland.</p>
+        <p xml:lang="ro">Versiunea 2.0.0 - Refactorizare modulară completă cu detecție dinamică a temelor (fără liste fixe), instalator robust pentru arhive imbricate, raportare îmbunătățită a progresului și suport complet pentru Wayland.</p>
       </description>
     </release>
     <release version="1.0.4" date="2025-07-27">
@@ -185,19 +185,15 @@
     </release>
     <release version="1.0.3" date="2025-07-18">
       <description>
-        <p>Actualización de metainfo para cumplir con AppStream/DEP-11.</p>
-        <p xml:lang="es">Actualización de metainfo para cumplir con AppStream/DEP-11.</p>
-        <p xml:lang="en">Metainfo update for AppStream/DEP-11 compliance.</p>
-        <p xml:lang="fr">Mise à jour du metainfo pour la conformité AppStream/DEP-11.</p>
-        <p xml:lang="pt">Atualização do metainfo para conformidade AppStream/DEP-11.</p>
-        <p xml:lang="de">Metainfo-Aktualisierung für AppStream/DEP-11-Konformität.</p>
-        <p xml:lang="it">Aggiornamento del metainfo per la conformità AppStream/DEP-11.</p>
-        <p xml:lang="ru">Обновление метаинформации для соответствия AppStream/DEP-11.</p>
-        <p xml:lang="ro">Actualizare metainfo pentru conformitate AppStream/DEP-11.</p>
-        <ul>
-          <li>Renombrado de screenshots a screenshot1.png, screenshot2.png, etc.</li>
-          <li>Mejoras menores de documentación y metadatos.</li>
-        </ul>
+        <p>Actualización de metainfo para cumplir con AppStream/DEP-11. Renombrado de screenshots a screenshot1.png, screenshot2.png, etc. Mejoras menores de documentación y metadatos.</p>
+        <p xml:lang="es">Actualización de metainfo para cumplir con AppStream/DEP-11. Renombrado de screenshots a screenshot1.png, screenshot2.png, etc. Mejoras menores de documentación y metadatos.</p>
+        <p xml:lang="en">Metainfo update for AppStream/DEP-11 compliance. Renamed screenshots to screenshot1.png, screenshot2.png, etc. Minor documentation and metadata improvements.</p>
+        <p xml:lang="fr">Mise à jour du metainfo pour la conformité AppStream/DEP-11. Renommage des captures d'écran en screenshot1.png, screenshot2.png, etc. Améliorations mineures de la documentation et des métadonnées.</p>
+        <p xml:lang="pt">Atualização do metainfo para conformidade AppStream/DEP-11. Renomeação de screenshots para screenshot1.png, screenshot2.png, etc. Melhorias menores na documentação e metadados.</p>
+        <p xml:lang="de">Metainfo-Aktualisierung für AppStream/DEP-11-Konformität. Screenshots umbenannt in screenshot1.png, screenshot2.png, etc. Kleinere Verbesserungen an Dokumentation und Metadaten.</p>
+        <p xml:lang="it">Aggiornamento del metainfo per la conformità AppStream/DEP-11. Rinominati screenshot in screenshot1.png, screenshot2.png, etc. Miglioramenti minori alla documentazione e ai metadati.</p>
+        <p xml:lang="ru">Обновление метаинформации для соответствия AppStream/DEP-11. Скриншоты переименованы в screenshot1.png, screenshot2.png и т.д. Незначительные улучшения документации и метаданных.</p>
+        <p xml:lang="ro">Actualizare metainfo pentru conformitate AppStream/DEP-11. Capturile de ecran redenumite în screenshot1.png, screenshot2.png, etc. Îmbunătățiri minore ale documentației și metadatelor.</p>
       </description>
     </release>
     <release version="1.0.0" date="2025-05-08">

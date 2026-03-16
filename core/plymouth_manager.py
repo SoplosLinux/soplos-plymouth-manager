@@ -72,7 +72,8 @@ class PlymouthManager:
                 'path': str(theme_path),
                 'config_path': str(config_file),
                 'description': theme_path.name.replace('-', ' ').title(),
-                'preview_path': self._find_preview_image(theme_path)
+                'preview_path': self._find_preview_image(theme_path),
+                'is_graphical': self._is_graphical_theme(theme_path)
             }
 
             # Try to read description from script or other files
@@ -125,179 +126,232 @@ class PlymouthManager:
                 return str(preview_file)
         return None
 
+    def _is_graphical_theme(self, theme_path: Path) -> bool:
+        """Dynamically detect if theme has graphical assets or scripts."""
+        has_images = any(theme_path.glob("*.png")) or \
+                     any(theme_path.glob("*.jpg")) or \
+                     any(theme_path.glob("*.jpeg"))
+        has_script = (theme_path / "plymouth.script").exists()
+        return has_images or has_script
+
     def get_current_theme(self) -> Optional[str]:
-        """
-        Get the currently active Plymouth theme.
-
-        Returns:
-            Current theme name or None
-        """
+        """Get current theme name."""
         try:
-            result = subprocess.run(['plymouth-set-default-theme'],
-                                  capture_output=True,
-                                  text=True,
-                                  timeout=10)
-            if result.returncode == 0:
-                return result.stdout.strip()
-        except (subprocess.TimeoutExpired, subprocess.SubprocessError) as e:
-            logger.error(f"Error getting current theme: {e}")
+            res = subprocess.run(['plymouth-set-default-theme'], capture_output=True, text=True, timeout=5)
+            return res.stdout.strip() if res.returncode == 0 else None
+        except: return None
 
-        return None
-
-    def set_theme(self, theme_name: str) -> bool:
-        """
-        Set the active Plymouth theme.
-
-        Args:
-            theme_name: Name of the theme to set
-
-        Returns:
-            True if successful, False otherwise
-        """
+    def set_theme(self, theme_name: str, progress_callback: Optional[callable] = None) -> bool:
+        """Set the active Plymouth theme and update initramfs in one step."""
         try:
-            # Use pkexec for privileged operation
-            cmd = PKEXEC_COMMAND + ['plymouth-set-default-theme', theme_name]
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            initramfs_system = self.theme_detector.detect_initramfs_system()
+            init_cmd_parts = INITRAMFS_COMMANDS.get(initramfs_system, [])
+            init_cmd_str = " ".join(init_cmd_parts) if init_cmd_parts else ""
 
-            if result.returncode == 0:
-                logger.info(f"Successfully set Plymouth theme to: {theme_name}")
-                self._update_initramfs()
-                return True
-            else:
-                logger.error(f"Failed to set theme: {result.stderr}")
-                return False
-
-        except (subprocess.TimeoutExpired, subprocess.SubprocessError) as e:
-            logger.error(f"Error setting theme {theme_name}: {e}")
+            script_content = f"""#!/bin/bash
+echo "SOPLOS_PROGRESS:5"
+plymouth-set-default-theme "{theme_name}"
+echo "SOPLOS_PROGRESS:20"
+if [ -n "{init_cmd_str}" ]; then
+    echo "Updating initramfs..."
+    {init_cmd_str} > /dev/null 2>&1 &
+    PID=$!
+    # Increment progress while waiting (max 90%)
+    P=20
+    while kill -0 $PID 2>/dev/null; do
+        sleep 1
+        if [ $P -lt 90 ]; then
+            P=$((P + 2))
+            echo "SOPLOS_PROGRESS:$P"
+        fi
+    done
+    wait $PID
+    echo "SOPLOS_PROGRESS:95"
+fi
+echo "SOPLOS_PROGRESS:100"
+exit 0
+"""
+            return self._run_script_with_progress(script_content, progress_callback)
+        except Exception as e:
+            logger.error(f"Error in set_theme: {e}")
             return False
 
-    def install_theme(self, theme_file: str) -> bool:
-        """
-        Install a Plymouth theme from file.
+    def _run_script_with_progress(self, script_content: str, progress_callback: Optional[callable]) -> bool:
+        """Helper to run a shell script with pkexec and track progress markers."""
+        script_path = None
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as script_file:
+                script_file.write(script_content)
+                script_path = script_file.name
+            
+            os.chmod(script_path, 0o755)
+            pkexec_cmd = PKEXEC_COMMAND + ['bash', script_path]
+            process = subprocess.Popen(
+                pkexec_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True
+            )
 
-        Args:
-            theme_file: Path to theme archive or directory
+            while True:
+                line = process.stdout.readline()
+                if not line: break
+                if "SOPLOS_PROGRESS:" in line and progress_callback:
+                    try:
+                        percent = int(line.split("SOPLOS_PROGRESS:")[1].strip())
+                        progress_callback(percent / 100.0)
+                    except: pass
+            
+            process.wait()
+            return process.returncode == 0
+        finally:
+            if script_path and os.path.exists(script_path):
+                try: os.remove(script_path)
+                except: pass
 
-        Returns:
-            True if successful, False otherwise
-        """
+    def install_theme(self, theme_file: str, progress_callback: Optional[callable] = None) -> Tuple[bool, str]:
+        """Install a Plymouth theme from file (Recursive search v2.0)."""
         theme_path = Path(theme_file)
         if not theme_path.exists():
-            logger.error(f"Theme file does not exist: {theme_file}")
-            return False
+            return False, "Theme file does not exist"
 
         try:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = Path(temp_dir)
+            script_content = f"""#!/bin/bash
+echo "SOPLOS_PROGRESS:5"
+THEME_DIR="/usr/share/plymouth/themes"
+TEMP_DIR=$(mktemp -d)
 
-                if theme_path.is_file():
-                    # Extract archive
-                    self._extract_archive(theme_path, temp_path)
-                else:
-                    # Copy directory
-                    shutil.copytree(theme_path, temp_path / theme_path.name)
+# Robust extraction (v2.1 logic)
+EXTRACT_CMD=""
+if [[ "{theme_file}" == *.tar.* ]] || [[ "{theme_file}" == *.tgz ]]; then
+    EXTRACT_CMD="tar xf \\"{theme_file}\\" -C \\"$TEMP_DIR\\""
+elif [[ "{theme_file}" == *.zip ]]; then
+    EXTRACT_CMD="unzip -q \\"{theme_file}\\" -d \\"$TEMP_DIR\\""
+elif [ -d "{theme_file}" ]; then
+    EXTRACT_CMD="cp -r \\"{theme_file}\\"/* \\"$TEMP_DIR/\\""
+fi
 
-                # Find theme directory
-                theme_dirs = list(temp_path.glob("*"))
-                if not theme_dirs:
-                    logger.error("No theme directory found in archive")
-                    return False
+if [ -n "$EXTRACT_CMD" ]; then
+    eval $EXTRACT_CMD || {{ echo "Error extracting archive"; rm -rf "$TEMP_DIR"; exit 1; }}
+fi
 
-                theme_dir = theme_dirs[0]
-                if not (theme_dir / "plymouth.script").exists():
-                    logger.error("Invalid Plymouth theme: missing plymouth.script")
-                    return False
+echo "SOPLOS_PROGRESS:40"
+# Recursive find to support nested gnome-look themes
+PLYMOUTH_CONFIG=$(find "$TEMP_DIR" -maxdepth 4 -name "*.plymouth" | head -n 1)
 
-                # Install to system directory
-                system_theme_dir = Path("/usr/share/plymouth/themes")
-                system_theme_dir.mkdir(parents=True, exist_ok=True)
+if [ -z "$PLYMOUTH_CONFIG" ]; then
+    echo "Error: No .plymouth config found in {theme_file}"
+    rm -rf "$TEMP_DIR"
+    exit 1
+fi
 
-                dest_dir = system_theme_dir / theme_dir.name
-                if dest_dir.exists():
-                    shutil.rmtree(dest_dir)
+echo "SOPLOS_PROGRESS:60"
+EXTRACTED_THEME_DIR=$(dirname "$PLYMOUTH_CONFIG")
+THEME_NAME=$(basename "$EXTRACTED_THEME_DIR")
 
-                shutil.copytree(theme_dir, dest_dir)
+# Install to system
+if [ -z "$THEME_NAME" ] || [ "$THEME_NAME" == "." ]; then
+    echo "Error: Invalid theme name detected"
+    rm -rf "$TEMP_DIR"
+    exit 1
+fi
 
-                logger.info(f"Successfully installed theme: {theme_dir.name}")
-                return True
+if [ -d "$THEME_DIR/$THEME_NAME" ]; then
+    rm -rf "$THEME_DIR/$THEME_NAME"
+fi
+
+echo "SOPLOS_PROGRESS:80"
+cp -r "$EXTRACTED_THEME_DIR" "$THEME_DIR/"
+chmod -R 755 "$THEME_DIR/$THEME_NAME"
+chown -R root:root "$THEME_DIR/$THEME_NAME"
+
+rm -rf "$TEMP_DIR"
+echo "SOPLOS_PROGRESS:100"
+exit 0
+"""
+            if self._run_script_with_progress(script_content, progress_callback):
+                return True, "Successfully installed theme"
+            return False, "Installation failed"
 
         except Exception as e:
             logger.error(f"Error installing theme: {e}")
-            return False
+            return False, str(e)
 
     def remove_theme(self, theme_name: str) -> bool:
-        """
-        Remove a Plymouth theme.
+        """Remove a Plymouth theme (Dynamic protection v2.0)."""
+        # Protect active theme instead of hardcoded list
+        current = self.get_current_theme()
+        if theme_name == current:
+            logger.error(f"Cannot remove active theme: {theme_name}")
+            return False
 
-        Args:
-            theme_name: Name of the theme to remove
-
-        Returns:
-            True if successful, False otherwise
-        """
-        # Don't allow removal of system themes
-        system_themes = ['text', 'details', 'fade-in', 'glow', 'script', 'solar', 'spinfinity']
-
-        if theme_name in system_themes:
-            logger.error(f"Cannot remove system theme: {theme_name}")
+        # Basic safe list for critical system themes
+        if theme_name in ['text', 'details', 'spinner', 'bgrt']:
+            logger.error(f"Cannot remove critical system theme: {theme_name}")
             return False
 
         for theme_dir in PLYMOUTH_THEME_DIRS:
             theme_path = Path(theme_dir) / theme_name
             if theme_path.exists():
                 try:
-                    shutil.rmtree(theme_path)
+                    subprocess.run(PKEXEC_COMMAND + ['rm', '-rf', str(theme_path)], check=True)
                     logger.info(f"Successfully removed theme: {theme_name}")
                     return True
-                except OSError as e:
+                except subprocess.CalledProcessError as e:
                     logger.error(f"Error removing theme {theme_name}: {e}")
                     return False
-
-        logger.error(f"Theme not found: {theme_name}")
         return False
 
-    def generate_preview(self, theme_name: str, output_file: Optional[str] = None) -> Optional[str]:
-        """
-        Generate a preview image for a Plymouth theme.
+    def generate_preview(self, theme_name: str) -> Optional[str]:
+        """Generate a preview of the SELECTED theme (v2.0 logic)."""
+        theme_path = self._get_theme_path(theme_name)
+        if not theme_path: return None
+        
+        output_file = str(theme_path / "preview.png")
+        display = os.environ.get('DISPLAY', ':0')
+        xauth = os.environ.get('XAUTHORITY', os.path.expanduser('~/.Xauthority'))
 
-        Args:
-            theme_name: Name of the theme
-            output_file: Output file path (optional)
+        script = f"""#!/bin/bash
+export DISPLAY="{display}"
+export XAUTHORITY="{xauth}"
+killall -9 plymouthd 2>/dev/null || true
 
-        Returns:
-            Path to preview image or None if failed
-        """
-        if not self.theme_detector.can_preview_theme():
-            logger.warning("Theme preview not supported in current environment")
-            return None
+# Remember current theme
+CUR_THEME=$(plymouth-set-default-theme)
 
-        try:
-            # Create temporary output file if not specified
-            if not output_file:
-                import tempfile
-                temp_fd, output_file = tempfile.mkstemp(suffix='.png')
-                os.close(temp_fd)
+# Temporarily switch to selected theme for preview
+plymouth-set-default-theme "{theme_name}"
 
-            # Use plymouth to generate preview
-            cmd = [
-                'plymouth',
-                '--show-splash',
-                '--theme', theme_name,
-                '--capture', output_file
-            ]
+# Launch plymouth in windowed mode
+/usr/sbin/plymouthd --mode=boot --no-daemon --debug --renderer=x11 &
+PLY_PID=$!
+sleep 1
+plymouth --show-splash
+sleep 2
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+# Capture
+scrot -o "{output_file}"
 
-            if result.returncode == 0 and Path(output_file).exists():
-                logger.info(f"Generated preview for theme {theme_name}: {output_file}")
-                return output_file
-            else:
-                logger.error(f"Failed to generate preview: {result.stderr}")
-                return None
+# Cleanup
+plymouth --quit
+kill -9 $PLY_PID 2>/dev/null || true
+plymouth-set-default-theme "$CUR_THEME"
+"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
+            f.write(script)
+            script_path = f.name
+        
+        os.chmod(script_path, 0o755)
+        subprocess.run(PKEXEC_COMMAND + ['bash', script_path])
+        os.remove(script_path)
+        
+        return output_file if os.path.exists(output_file) else None
 
-        except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError) as e:
-            logger.error(f"Error generating preview: {e}")
-            return None
+    def _get_theme_path(self, name: str) -> Optional[Path]:
+        for d in PLYMOUTH_THEME_DIRS:
+            p = Path(d) / name
+            if p.exists(): return p
+        return None
 
     def _extract_archive(self, archive_path: Path, dest_dir: Path) -> None:
         """

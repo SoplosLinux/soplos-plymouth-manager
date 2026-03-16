@@ -14,18 +14,18 @@ import sys
 import os
 sys.path.insert(0, '/usr/share/soplos-plymouth-manager')
 os.environ['GDK_STARTUP_ID'] = '${GDK_STARTUP_NOTIFICATION_ID}'
-os.environ['WMCLASS'] = 'com.soplos.plymouthmanager'
+os.environ['WMCLASS'] = 'org.soplos.plymouthmanager'
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
 # Establecer el nombre de la aplicación antes de importar módulos
-GLib.set_prgname('com.soplos.plymouthmanager')
+GLib.set_prgname('org.soplos.plymouthmanager')
 GLib.set_application_name('soplos-plymouth-manager')
-Gtk.Window.set_default_icon_name('com.soplos.plymouthmanager')
+Gtk.Window.set_default_icon_name('org.soplos.plymouthmanager')
 if hasattr(Gdk, 'set_program_class'):
-    Gdk.set_program_class('com.soplos.plymouthmanager')
+    Gdk.set_program_class('org.soplos.plymouthmanager')
 
 # Importar y ejecutar el programa principal
 import main
