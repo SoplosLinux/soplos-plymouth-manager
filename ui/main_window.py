@@ -71,6 +71,7 @@ class ThemeCard(Gtk.Button):
         label = Gtk.Label(label=theme_info['name'])
         label.get_style_context().add_class('theme-card-label')
         label.set_ellipsize(Pango.EllipsizeMode.END)
+        label.set_max_width_chars(15)
         label.set_halign(Gtk.Align.CENTER)
         vbox.pack_start(label, False, False, 0)
 
