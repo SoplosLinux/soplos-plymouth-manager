@@ -58,6 +58,9 @@ class PlymouthManager:
                 seen_names.add(theme['name'])
                 unique_themes.append(theme)
 
+        # Sort themes alphabetically by name
+        unique_themes.sort(key=lambda x: x['name'].lower())
+
         logger.info(f"Found {len(unique_themes)} Plymouth themes")
         return unique_themes
 
