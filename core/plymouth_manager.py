@@ -428,6 +428,11 @@ plymouth-set-default-theme "$CUR_THEME"
         if not config_files:
             return False, "Missing .plymouth configuration file"
 
+        # Check for plymouth.script
+        script_file = path / "plymouth.script"
+        if not script_file.exists():
+            return False, "Missing plymouth.script file"
+
         # Check for basic script structure
         try:
             with open(script_file, 'r', encoding='utf-8') as f:
