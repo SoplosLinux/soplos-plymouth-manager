@@ -127,12 +127,71 @@ class PlymouthManager:
         return None
 
     def _is_graphical_theme(self, theme_path: Path) -> bool:
-        """Dynamically detect if theme has graphical assets or scripts."""
-        has_images = any(theme_path.glob("*.png")) or \
-                     any(theme_path.glob("*.jpg")) or \
-                     any(theme_path.glob("*.jpeg"))
-        has_script = (theme_path / "plymouth.script").exists()
-        return has_images or has_script
+        """Dynamically detect if theme has graphical assets, scripts or visual modules."""
+        # 1. Analyze .plymouth configuration
+        config_files = list(theme_path.glob("*.plymouth"))
+        if config_files:
+            try:
+                with open(config_files[0], 'r', encoding='utf-8') as f:
+                    module = ""
+                    for line in f:
+                        if line.lower().startswith('modulename='):
+                            module = line.split('=')[1].strip().lower()
+                            break
+                    
+                    # 'text' and 'details' are standard null-renderers in Plymouth
+                    if module in ['text', 'details']:
+                        logger.info(f"Theme {theme_path.name} is a pure text/details theme")
+                        return False
+
+                    # Anything else with a module name is intended to show something visual
+                    if module:
+                        logger.info(f"Theme {theme_path.name} uses visual module '{module}'")
+                        return True
+            except Exception as e:
+                logger.debug(f"Error parsing .plymouth for {theme_path.name}: {e}")
+
+        # 2. Heuristic fallback: check for explicit graphical assets (recursive)
+        # This covers themes that might not have a module but have images/scripts
+        # IMPORTANT: Filter out preview images themselves
+        assets = [p for p in theme_path.rglob("*.png") if p.name not in ["preview.png", "thumbnail.png"]] + \
+                 list(theme_path.rglob("*.jpg")) + \
+                 list(theme_path.rglob("*.jpeg")) + \
+                 list(theme_path.rglob("plymouth.script"))
+        
+        return len(assets) > 0
+
+    def _get_available_terminal(self) -> Optional[str]:
+        """Find an available terminal emulator."""
+        terminals = ['xfce4-terminal', 'gnome-terminal', 'konsole', 'kitty', 'lxterminal', 'xterm']
+        for term in terminals:
+            if subprocess.run(['which', term], capture_output=True).returncode == 0:
+                return term
+        return None
+
+    def _get_screenshot_tool(self) -> Optional[Tuple[str, str]]:
+        """Find an available screenshot tool and its output flag."""
+        # protocol = self.env_info.get('protocol', 'x11')
+        is_wayland = bool(os.environ.get('WAYLAND_DISPLAY'))
+
+        if is_wayland:
+            tools = [
+                ('gnome-screenshot', '-f'),
+                ('spectacle', '-b -n -o'),
+                ('grim', ''), # grim needs a filename as last arg
+                ('xfce4-screenshooter', '-s') # Some Wayland portals support this
+            ]
+        else:
+            tools = [
+                ('scrot', '-o'),
+                ('xfce4-screenshooter', '-s'),
+                ('import', '')
+            ]
+
+        for tool, flag in tools:
+            if subprocess.run(['which', tool], capture_output=True).returncode == 0:
+                return tool, flag
+        return None
 
     def get_current_theme(self) -> Optional[str]:
         """Get current theme name."""
@@ -303,39 +362,88 @@ exit 0
         return False
 
     def generate_preview(self, theme_name: str) -> Optional[str]:
-        """Generate a preview of the SELECTED theme (v2.0 logic)."""
+        """Generate a preview of the SELECTED theme using dynamic tools."""
         theme_path = self._get_theme_path(theme_name)
         if not theme_path: return None
         
         output_file = str(theme_path / "preview.png")
         display = os.environ.get('DISPLAY', ':0')
+        wayland_display = os.environ.get('WAYLAND_DISPLAY', '')
         xauth = os.environ.get('XAUTHORITY', os.path.expanduser('~/.Xauthority'))
+
+        # Detect tools
+        terminal = self._get_available_terminal()
+        toolinfo = self._get_screenshot_tool()
+        if not toolinfo:
+            logger.error("No screenshot tool found!")
+            return None
+        shot_tool, shot_flag = toolinfo
+
+        # Determine if we should use terminal-wrapper or direct X11
+        is_tty_module = False
+        config_file = next(theme_path.glob("*.plymouth"), None)
+        if config_file:
+            try:
+                with open(config_file, 'r') as f:
+                    content = f.read().lower()
+                    if 'modulename=tribar' in content or 'modulename=bgrt' in content:
+                        is_tty_module = True
+                        logger.info(f"Theme {theme_name} detected as TTY-based module (wrapped in terminal)")
+            except Exception as e:
+                logger.debug(f"Error in TTY detection: {e}")
+
+        # Binary paths
+        plymouth_bin = "/usr/bin/plymouth"
+        plymouthd_bin = "/usr/sbin/plymouthd"
+        set_theme_bin = "/usr/sbin/plymouth-set-default-theme"
+
+        # Generate execution script
+        if is_tty_module and terminal:
+            # Clean fullscreen appearance to simulate real splash
+            term_args = ""
+            if "xfce4-terminal" in terminal:
+                term_args = "--fullscreen --hide-menubar --hide-borders --hide-toolbar --hide-scrollbar"
+            elif "gnome-terminal" in terminal:
+                term_args = "--full-screen"
+            elif "konsole" in terminal or "kitty" in terminal:
+                term_args = "--fullscreen"
+            
+            logger.info(f"Launching fullscreen terminal preview: {terminal} {term_args}")
+            preview_cmd = f"{terminal} {term_args} -T \"Plymouth Preview\" -e \"bash -c 'clear; {plymouthd_bin} --mode=boot --no-daemon; {plymouth_bin} --show-splash; {plymouth_bin} --update=50; sleep 2; {plymouth_bin} --quit'\" &"
+        else:
+            preview_cmd = f"{plymouthd_bin} --mode=boot --no-daemon --renderer=x11 >/dev/null 2>&1 &"
 
         script = f"""#!/bin/bash
 export DISPLAY="{display}"
+export WAYLAND_DISPLAY="{wayland_display}"
 export XAUTHORITY="{xauth}"
 killall -9 plymouthd 2>/dev/null || true
 
-# Remember current theme
-CUR_THEME=$(plymouth-set-default-theme)
+CUR_THEME=$({set_theme_bin})
+{set_theme_bin} "{theme_name}"
 
-# Temporarily switch to selected theme for preview
-plymouth-set-default-theme "{theme_name}"
-
-# Launch plymouth in windowed mode
-/usr/sbin/plymouthd --mode=boot --no-daemon --debug --renderer=x11 &
+{preview_cmd} 2>/dev/null
 PLY_PID=$!
-sleep 1
-plymouth --show-splash
-sleep 2
+sleep 1.5
+{plymouth_bin} --show-splash 2>/dev/null || true
+{plymouth_bin} --update=50 2>/dev/null || true
+sleep 3
 
-# Capture
-scrot -o "{output_file}"
+# Capture using detected tool
+if [ "{shot_tool}" == "grim" ]; then
+    grim "{output_file}"
+elif [ "{shot_tool}" == "import" ]; then
+    import -window "Plymouth Preview" "{output_file}" 2>/dev/null || import -window root "{output_file}"
+elif [ "{shot_tool}" == "scrot" ]; then
+    scrot -u -z -o "{output_file}" || scrot -z -o "{output_file}"
+else
+    {shot_tool} {shot_flag} "{output_file}"
+fi
 
 # Cleanup
-plymouth --quit
+{plymouth_bin} --quit 2>/dev/null || true
 kill -9 $PLY_PID 2>/dev/null || true
-plymouth-set-default-theme "$CUR_THEME"
+{set_theme_bin} "$CUR_THEME"
 """
         with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
             f.write(script)
@@ -345,7 +453,10 @@ plymouth-set-default-theme "$CUR_THEME"
         subprocess.run(PKEXEC_COMMAND + ['bash', script_path])
         os.remove(script_path)
         
-        return output_file if os.path.exists(output_file) else None
+        if os.path.exists(output_file):
+            logger.info(f"Preview generated for {theme_name}: {output_file}")
+            return output_file
+        return None
 
     def _get_theme_path(self, name: str) -> Optional[Path]:
         for d in PLYMOUTH_THEME_DIRS:
