@@ -135,12 +135,13 @@
     </screenshot>
   </screenshots>
 
-  <url type="homepage">https://soploslinux.com</url>
+  <url type="homepage">https://soplos.org/</url>
   <url type="bugtracker">https://github.com/SoplosLinux/soplos-plymouth-manager/issues</url>
+  <url type="help">https://soplos.org/wiki</url>
   <url type="donation">https://www.paypal.com/paypalme/isubdes</url>
-  <url type="contact">https://soploslinux.com/foros/</url>
+  <url type="contact">https://soplos.org/</url>
 
-  <developer id="com.soploslinux">
+  <developer id="org.soplos">
     <name>Sergi Perich</name>
     <name xml:lang="en">Sergi Perich</name>
     <name xml:lang="es">Sergi Perich</name>
@@ -150,7 +151,7 @@
     <name xml:lang="it">Sergi Perich</name>
     <name xml:lang="ru">Sergi Perich</name>
     <name xml:lang="ro">Sergi Perich</name>
-    <url type="homepage">https://soploslinux.com</url>
+    <url type="homepage">https://soplos.org/</url>
   </developer>
 
   <provides>

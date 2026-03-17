@@ -78,6 +78,6 @@ To report bugs or request features:
 
 ## Support
 
-- **Documentation**: https://soploslinux.com
-- **Community**: https://soploslinux.com/community
+- **Documentation**: https://soplos.org/wiki
+- **Community**: https://soplos.org/
 - **Support**: info@soploslinux.com

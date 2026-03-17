@@ -5,13 +5,9 @@
 
 Graphical Plymouth theme manager for Soplos Linux compatible with XFCE, Plasma and GNOME.
 
-*Gestor gráfico de temas Plymouth para Soplos Linux compatible con XFCE, Plasma y GNOME.*
-
 ## 📝 Description
 
 A GTK3 graphical interface to manage Plymouth boot splash themes: preview, installation, application and advanced theme configuration, with complete internationalization support.
-
-*Una interfaz gráfica GTK3 para gestionar temas de arranque Plymouth: previsualización, instalación, aplicación y configuración avanzada de temas, con soporte multiidioma.*
 
 ## ✨ Features
 
@@ -35,12 +31,11 @@ A GTK3 graphical interface to manage Plymouth boot splash themes: preview, insta
 
 ## 📥 Installation
 
-```bash
-# Dependencies
-sudo apt install python3-gi gir1.2-gtk-3.0 plymouth
+Available in the official Soplos Linux repositories:
 
-# Installation
-sudo pip3 install .
+```bash
+sudo apt update
+sudo apt install soplos-plymouth-manager
 ```
 
 ## 🚀 Usage
@@ -54,10 +49,9 @@ soplos-plymouth-manager
 
 The application is **fully compatible with Wayland** and works perfectly on:
 
-- **Plasma 6 + Wayland** (Soplos Linux Tyson)
-- **GNOME + Wayland**
-- **Sway** and other Wayland compositors
-- **X11** (all traditional environments)
+- **Xfce (X11)** (Soplos Linux Tyron)
+- **Plasma 6 (Wayland/X11)** (Soplos Linux Tyson)
+- **GNOME (Wayland/X11)** (Soplos Linux Boro)
 
 ### Wayland Specific Features:
 - ✅ Automatic window protocol detection
@@ -70,14 +64,8 @@ The application is **fully compatible with Wayland** and works perfectly on:
 If the application is not using the correct theme:
 
 ```bash
-# Force dark theme
-GTK_THEME=Adwaita:dark soplos-plymouth-manager
-
-# Force light theme
-GTK_THEME=Adwaita soplos-plymouth-manager
-
-# For Plasma with Breeze theme
-GTK_THEME=Breeze-Dark soplos-plymouth-manager
+# Force Orchis Orange Dark Compact theme
+GTK_THEME=Orchis-Orange-Dark-Compact soplos-plymouth-manager
 ```
 
 ## 📸 Screenshots
@@ -101,11 +89,9 @@ GTK_THEME=Breeze-Dark soplos-plymouth-manager
 
 ## 🐧 Distribution Compatibility
 
-- ✅ **Soplos Linux Tyson** (Plasma 6 + Wayland)
-- ✅ Ubuntu/Debian (GNOME/X11/Wayland)
-- ✅ Fedora (GNOME/KDE/Wayland)
-- ✅ Arch Linux (any DE)
-- ✅ openSUSE (KDE/GNOME)
+- ✅ **Soplos Linux Tyron** (Xfce)
+- ✅ **Soplos Linux Tyson** (Plasma 6)
+- ✅ **Soplos Linux Boro** (GNOME)
 
 ## 📄 License
 
@@ -117,9 +103,10 @@ Developed by Sergi Perich
 
 ## 🔗 Links
 
-- [Website](https://soploslinux.com)
+- [Website](https://soplos.org/)
+- [Documentation](https://soplos.org/#docs)
+- [Help / Wiki](https://soplos.org/wiki)
 - [Report Issues](https://github.com/SoplosLinux/soplos-plymouth-manager/issues)
-- [Help](https://soploslinux.com)
 - [Contact](mailto:info@soploslinux.com)
 
 ## 📦 Versions
