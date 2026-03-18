@@ -502,13 +502,16 @@ rm -f "$TMP_SHOT" 2>/dev/null
         return None
 
     def _preview_tty_wayland(self, theme_name: str) -> Optional[str]:
-        """Validated TTY preview for Wayland: xterm + pkexec inside, import as user outside."""
+        """Validated TTY preview for Wayland: xterm + pkexec script, import as user outside."""
         theme_path = self._get_theme_path(theme_name)
         if not theme_path: return None
 
         output_file = str(theme_path / "preview.png")
-        tmp_shot = f"/tmp/plymouth_tty_preview_{os.getpid()}.png"
-        tmp_xauth = f"/tmp/xauth_soplos_{os.getpid()}"
+        pid = os.getpid()
+        tmp_shot = f"/tmp/plymouth_tty_preview_{pid}.png"
+        tmp_xauth = f"/tmp/xauth_soplos_{pid}"
+        root_script_path = f"/tmp/soplos_root_script_{pid}.sh"
+        
         display = os.environ.get('DISPLAY', ':0')
         xdg_runtime = os.environ.get('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}')
         xauth_orig = os.environ.get('XAUTHORITY', os.path.expanduser('~/.Xauthority'))
@@ -520,24 +523,44 @@ rm -f "$TMP_SHOT" 2>/dev/null
             logger.error(f"[TTY] Failed to copy XAUTHORITY: {e}")
             return None
 
-        env = {**os.environ, 'DISPLAY': display, 'XAUTHORITY': tmp_xauth}
+        script_content = f'''#!/bin/bash
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export DISPLAY="{display}"
+export XAUTHORITY="{tmp_xauth}"
+export XDG_RUNTIME_DIR="{xdg_runtime}"
 
-        # pkexec only runs plymouthd inside xterm — import runs as user outside
-        pkexec_inner = (
-            f'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; '
-            f'export DISPLAY={display}; '
-            f'export XAUTHORITY={tmp_xauth}; '
-            f'export XDG_RUNTIME_DIR={xdg_runtime}; '
-            f'killall -9 plymouthd 2>/dev/null; '
-            f'CUR=$(/usr/sbin/plymouth-set-default-theme); '
-            f'/usr/sbin/plymouth-set-default-theme "{theme_name}"; '
-            f'/usr/sbin/plymouthd --mode=boot --no-daemon --no-udev --renderer=x11 --tty=$(tty) </dev/null >/dev/null 2>&1 & '
-            f'P=$!; '
-            f'sleep 2; /usr/bin/plymouth --show-splash >/dev/null 2>&1; '
-            f'sleep 12; '
-            f'kill -9 $P 2>/dev/null; '
-            f'/usr/sbin/plymouth-set-default-theme "$CUR"'
-        )
+killall -9 plymouthd 2>/dev/null || true
+CUR=$(/usr/sbin/plymouth-set-default-theme)
+/usr/sbin/plymouth-set-default-theme "{theme_name}"
+
+/usr/sbin/plymouthd --mode=boot --no-daemon --no-udev --renderer=x11 --tty="$1" </dev/null >/dev/null 2>&1 &
+P=$!
+
+sleep 2
+/usr/bin/plymouth --show-splash >/dev/null 2>&1
+
+for i in $(seq 1 15); do
+  if [ -f "{tmp_shot}.done" ]; then
+    mv "{tmp_shot}" "{output_file}" >/dev/null 2>&1
+    chmod 644 "{output_file}" >/dev/null 2>&1
+    rm -f "{tmp_shot}.done" >/dev/null 2>&1
+    break
+  fi
+  sleep 1
+done
+
+kill -9 $P 2>/dev/null || true
+/usr/sbin/plymouth-set-default-theme "$CUR"
+'''
+        try:
+            with open(root_script_path, 'w') as f:
+                f.write(script_content)
+            os.chmod(root_script_path, 0o755)
+        except Exception as e:
+            logger.error(f"[TTY] Failed to create root script: {e}")
+            return None
+
+        env = {**os.environ, 'DISPLAY': display, 'XAUTHORITY': tmp_xauth}
 
         xterm_cmd = [
             'xterm',
@@ -547,14 +570,13 @@ rm -f "$TMP_SHOT" 2>/dev/null
             '-xrm', 'xterm*vt100.scrollBar: false',
             '-xrm', 'xterm*vt100.visualBell: false',
             '-fullscreen',
-            '-e', 'bash', '-c', f'T=$(tty); pkexec bash -c "{pkexec_inner}"'
+            '-e', 'bash', '-c', f'T=$(tty); pkexec bash "{root_script_path}" "$T"'
         ]
 
         try:
             logger.info("[TTY] Launching xterm via Popen...")
             xterm_proc = subprocess.Popen(xterm_cmd, env=env)
 
-            # Wait for xterm window to appear — import runs as user outside pkexec
             wid = None
             for i in range(15):
                 time.sleep(1)
@@ -576,32 +598,24 @@ rm -f "$TMP_SHOT" 2>/dev/null
             logger.info(f"[TTY] WID={wid} — waiting 8s for plymouth to render...")
             time.sleep(8)
 
-            # import runs as user — same as the original working command
             capture = subprocess.run(
                 ['import', '-window', wid, tmp_shot],
                 env=env, capture_output=True
             )
             logger.info(f"[TTY] import returned: {capture.returncode}")
 
-            if os.path.exists(tmp_shot):
-                subprocess.run(
-                    PKEXEC_COMMAND + ['bash', '-c',
-                        f'mv "{tmp_shot}" "{output_file}" && chmod 644 "{output_file}"'
-                    ],
-                    check=False
-                )
+            if capture.returncode == 0 and os.path.exists(tmp_shot):
+                with open(f"{tmp_shot}.done", 'w') as f: pass
 
             xterm_proc.wait(timeout=20)
 
         except Exception as e:
             logger.error(f"[TTY] Preview failed: {e}")
         finally:
-            if os.path.exists(tmp_xauth):
-                try: os.remove(tmp_xauth)
-                except: pass
-            if os.path.exists(tmp_shot):
-                try: os.remove(tmp_shot)
-                except: pass
+            for clean_file in [tmp_xauth, tmp_shot, f"{tmp_shot}.done", root_script_path]:
+                if os.path.exists(clean_file):
+                    try: os.remove(clean_file)
+                    except: pass
 
         return output_file if os.path.exists(output_file) else None
 
