@@ -111,8 +111,11 @@ Developed by Sergi Perich
 
 ## 📦 Versions
 
-### v2.0.0 (2026-03-16)
+### v2.0.0 (2026-03-18)
 - Complete refactoring to modular architecture.
+- **Unified environment detection (`core/environment.py`) for DE, protocol, and theme.**
+- **Advanced GNOME previews with Xephyr bridge and xterm for TTY themes.**
+- **Standard-compliant logging at `~/.cache/soplos-plymouth-manager/`.**
 - Full dynamic theme detection (Eliminated hardcoded names/modules).
 - Robust theme installer with deep search for nested archives.
 - Enhanced progress bars and real-time feedback.

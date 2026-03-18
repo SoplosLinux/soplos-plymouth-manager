@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2026-03-16
+## [2.0.0] - 2026-03-18
 
 ### 🎉 Added
 - Complete modular architecture (core/, ui/, utils/, config/, locale/, assets/)
 - Advanced support for Wayland, GNOME, Plasma, and XFCE
+- **Unified environment detection (core/environment.py) for DE, protocol, and system theme**
+- **Advanced GNOME previews with Xephyr bridge for Wayland and xterm for TTY-based themes**
 - Intelligent detection of desktop environments and protocols (X11/Wayland)
 - Responsive Gallery: Dynamically adapts to window size without rigid column limits
 - Standard Soplos keyboard shortcuts (Ctrl+Q, F5, Ctrl+A, Ctrl+P, Ctrl+I, Delete)
@@ -25,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🛠️ Improved
 - Native support for Dracut-based systems (Soplos Linux standard)
+- **Standard-compliant logging at ~/.cache/soplos-plymouth-manager/**
+- **Minimized password prompts via unified pkexec logic for preview generation**
 - Unified privilege management via `pkexec`
 - Complete internationalization with native support for 8 languages via gettext
 - **Enhanced progress reporting with smooth updates during initramfs generation**
