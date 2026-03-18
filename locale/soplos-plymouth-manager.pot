@@ -1,182 +1,159 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Sergi Perich
-# This file is distributed under the same license as the soplos-plymouth-manager package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: soplos-plymouth-manager 2.0.0\n"
-"Report-Msgid-Bugs-To: info@soploslinux.com\n"
-"POT-Creation-Date: 2026-03-15 19:27+0100\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-18 14:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ui/main_window.py:39
-msgid "preview_of_theme"
+#: main.py:51
+#, python-brace-format
+msgid ""
+"Failed to start application:\n"
+"{error}"
 msgstr ""
 
-#: ui/main_window.py:67 ui/main_window.py:204
-msgid "app_name"
+#: core/plymouth_manager.py:260
+msgid "Theme file does not exist"
 msgstr ""
 
-#: ui/main_window.py:76
-msgid "generating_preview"
+#: core/plymouth_manager.py:316
+msgid "Successfully installed theme"
 msgstr ""
 
-#: ui/main_window.py:85
-msgid "close"
+#: core/plymouth_manager.py:317
+msgid "Installation failed"
 msgstr ""
 
-#: ui/main_window.py:120
-msgid "preview_generated_successfully"
+#: core/plymouth_manager.py:321
+#, python-brace-format
+msgid "Error installing theme: {e}"
 msgstr ""
 
-#: ui/main_window.py:130
-msgid "preview_generation_failed"
+#: core/plymouth_manager.py:774
+msgid "Theme directory does not exist"
 msgstr ""
 
-#: ui/main_window.py:208
-msgid "app_description"
+#: core/plymouth_manager.py:777
+msgid "Theme path is not a directory"
 msgstr ""
 
-#: ui/main_window.py:216
-msgid "available_themes"
+#: core/plymouth_manager.py:781
+msgid "Missing .plymouth configuration file"
 msgstr ""
 
-#: ui/main_window.py:229
-msgid "name"
+#: core/plymouth_manager.py:785
+msgid "Missing plymouth.script file"
 msgstr ""
 
-#: ui/main_window.py:232
-msgid "description"
+#: core/plymouth_manager.py:791
+msgid "Invalid plymouth.script content"
 msgstr ""
 
-#: ui/main_window.py:243
-msgid "progress"
+#: core/plymouth_manager.py:793
+#, python-brace-format
+msgid "Error reading script file: {e}"
 msgstr ""
 
-#: ui/main_window.py:258 ui/main_window.py:522
-msgid "ready"
+#: core/plymouth_manager.py:795
+msgid "Theme is valid"
 msgstr ""
 
-#: ui/main_window.py:270
-msgid "apply_theme"
-msgstr ""
-
-#: ui/main_window.py:270
-msgid "tooltip_apply"
-msgstr ""
-
-#: ui/main_window.py:271
-msgid "preview"
-msgstr ""
-
-#: ui/main_window.py:271
-msgid "tooltip_preview"
-msgstr ""
-
-#: ui/main_window.py:272
-msgid "install"
-msgstr ""
-
-#: ui/main_window.py:272
-msgid "tooltip_install"
+#: ui/main_window.py:241
+msgid "Ready"
 msgstr ""
 
 #: ui/main_window.py:273
-msgid "remove"
-msgstr ""
-
-#: ui/main_window.py:273
-msgid "tooltip_remove"
+msgid "Apply Theme"
 msgstr ""
 
 #: ui/main_window.py:274
-msgid "refresh"
-msgstr ""
-
-#: ui/main_window.py:274
-msgid "tooltip_refresh"
+msgid "Preview"
 msgstr ""
 
 #: ui/main_window.py:275
-msgid "exit"
+msgid "Install"
 msgstr ""
 
-#: ui/main_window.py:275
-msgid "tooltip_exit"
+#: ui/main_window.py:276
+msgid "Remove"
 msgstr ""
 
-#: ui/main_window.py:296
-msgid "loading_themes"
+#: ui/main_window.py:277
+msgid "Refresh"
 msgstr ""
 
-#: ui/main_window.py:306
-msgid "error_loading_themes"
+#: ui/main_window.py:311
+msgid "Running on {} ({})"
 msgstr ""
 
-#: ui/main_window.py:322
-msgid "themes_loaded"
+#: ui/main_window.py:316
+msgid "Loading themes…"
 msgstr ""
 
-#: ui/main_window.py:344 ui/main_window.py:367 ui/main_window.py:436
-msgid "select_theme_first"
+#: ui/main_window.py:328
+#, python-brace-format
+msgid "{num} themes loaded"
 msgstr ""
 
-#: ui/main_window.py:347
-msgid "applying_theme"
+#: ui/main_window.py:354
+#, python-brace-format
+msgid "Applying {name}…"
 msgstr ""
 
-#: ui/main_window.py:353
-msgid "theme_applied_successfully"
+#: ui/main_window.py:363
+msgid "Success"
 msgstr ""
 
-#: ui/main_window.py:355 ui/main_window.py:358
-msgid "error_applying_theme"
+#: ui/main_window.py:363
+msgid "Error"
 msgstr ""
 
-#: ui/main_window.py:378
-msgid "select_theme_file"
+#: ui/main_window.py:370
+msgid "Theme is text-only"
 msgstr ""
 
-#: ui/main_window.py:389
-msgid "plymouth_themes"
+#: ui/main_window.py:373
+msgid "Text-only Theme"
 msgstr ""
 
-#: ui/main_window.py:394
-msgid "archive_files"
+#: ui/main_window.py:375
+msgid "This theme handles text only and cannot be previewed in a window."
 msgstr ""
 
-#: ui/main_window.py:411
-msgid "installing_theme"
+#: ui/main_window.py:380
+#, python-brace-format
+msgid "Generating Preview for {name}…"
 msgstr ""
 
-#: ui/main_window.py:419 ui/main_window.py:422
-msgid "error_installing_theme"
+#: ui/main_window.py:388
+msgid "Preview generated"
 msgstr ""
 
-#: ui/main_window.py:429
-msgid "theme_installed_successfully"
+#: ui/main_window.py:391
+msgid "Error generating preview"
 msgstr ""
 
-#: ui/main_window.py:445
-msgid "confirm_remove_theme"
+#: ui/main_window.py:395
+msgid "Select Theme Bundle"
 msgstr ""
 
-#: ui/main_window.py:456
-msgid "removing_theme"
+#: ui/main_window.py:401
+msgid "Installing…"
 msgstr ""
 
-#: ui/main_window.py:464 ui/main_window.py:467
-msgid "error_removing_theme"
-msgstr ""
-
-#: ui/main_window.py:474
-msgid "theme_removed_successfully"
+#: ui/main_window.py:420
+#, python-brace-format
+msgid "Removing {name}…"
 msgstr ""

@@ -1,182 +1,159 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Sergi Perich
+# Italian translation for soplos-plymouth-manager.
+# Copyright (C) 2026 Sergi Perich
 # This file is distributed under the same license as the soplos-plymouth-manager package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: soplos-plymouth-manager 2.0.0\n"
 "Report-Msgid-Bugs-To: info@soploslinux.com\n"
-"POT-Creation-Date: 2026-03-15 19:27+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2026-03-18 14:35+0100\n"
+"PO-Revision-Date: 2026-03-18 14:35+0100\n"
+"Last-Translator: Sergi Perich <info@soploslinux.com>\n"
+"Language-Team: Italian\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ui/main_window.py:39
-msgid "preview_of_theme"
+#: main.py:51
+#, python-brace-format
+msgid ""
+"Failed to start application:\n"
+"{error}"
 msgstr ""
+"Impossibile avviare l'applicazione:\n"
+"{error}"
 
-#: ui/main_window.py:67 ui/main_window.py:204
-msgid "app_name"
-msgstr ""
+#: core/plymouth_manager.py:260
+msgid "Theme file does not exist"
+msgstr "Il file del tema non esiste"
 
-#: ui/main_window.py:76
-msgid "generating_preview"
-msgstr ""
+#: core/plymouth_manager.py:316
+msgid "Successfully installed theme"
+msgstr "Tema installato con successo"
 
-#: ui/main_window.py:85
-msgid "close"
-msgstr ""
+#: core/plymouth_manager.py:317
+msgid "Installation failed"
+msgstr "Installazione non riuscita"
 
-#: ui/main_window.py:120
-msgid "preview_generated_successfully"
-msgstr ""
+#: core/plymouth_manager.py:321
+#, python-brace-format
+msgid "Error installing theme: {e}"
+msgstr "Errore durante l'installazione del tema: {e}"
 
-#: ui/main_window.py:130
-msgid "preview_generation_failed"
-msgstr ""
+#: core/plymouth_manager.py:774
+msgid "Theme directory does not exist"
+msgstr "La directory del tema non esiste"
 
-#: ui/main_window.py:208
-msgid "app_description"
-msgstr ""
+#: core/plymouth_manager.py:777
+msgid "Theme path is not a directory"
+msgstr "Il percorso del tema non è una directory"
 
-#: ui/main_window.py:216
-msgid "available_themes"
-msgstr ""
+#: core/plymouth_manager.py:781
+msgid "Missing .plymouth configuration file"
+msgstr "File di configurazione .plymouth mancante"
 
-#: ui/main_window.py:229
-msgid "name"
-msgstr ""
+#: core/plymouth_manager.py:785
+msgid "Missing plymouth.script file"
+msgstr "File plymouth.script mancante"
 
-#: ui/main_window.py:232
-msgid "description"
-msgstr ""
+#: core/plymouth_manager.py:791
+msgid "Invalid plymouth.script content"
+msgstr "Contenuto di plymouth.script non valido"
 
-#: ui/main_window.py:243
-msgid "progress"
-msgstr ""
+#: core/plymouth_manager.py:793
+#, python-brace-format
+msgid "Error reading script file: {e}"
+msgstr "Errore durante la lettura del file script: {e}"
 
-#: ui/main_window.py:258 ui/main_window.py:522
-msgid "ready"
-msgstr ""
+#: core/plymouth_manager.py:795
+msgid "Theme is valid"
+msgstr "Il tema è valido"
 
-#: ui/main_window.py:270
-msgid "apply_theme"
-msgstr ""
-
-#: ui/main_window.py:270
-msgid "tooltip_apply"
-msgstr ""
-
-#: ui/main_window.py:271
-msgid "preview"
-msgstr ""
-
-#: ui/main_window.py:271
-msgid "tooltip_preview"
-msgstr ""
-
-#: ui/main_window.py:272
-msgid "install"
-msgstr ""
-
-#: ui/main_window.py:272
-msgid "tooltip_install"
-msgstr ""
+#: ui/main_window.py:241
+msgid "Ready"
+msgstr "Pronto"
 
 #: ui/main_window.py:273
-msgid "remove"
-msgstr ""
-
-#: ui/main_window.py:273
-msgid "tooltip_remove"
-msgstr ""
+msgid "Apply Theme"
+msgstr "Applica tema"
 
 #: ui/main_window.py:274
-msgid "refresh"
-msgstr ""
-
-#: ui/main_window.py:274
-msgid "tooltip_refresh"
-msgstr ""
+msgid "Preview"
+msgstr "Anteprima"
 
 #: ui/main_window.py:275
-msgid "exit"
-msgstr ""
+msgid "Install"
+msgstr "Installa"
 
-#: ui/main_window.py:275
-msgid "tooltip_exit"
-msgstr ""
+#: ui/main_window.py:276
+msgid "Remove"
+msgstr "Rimuovi"
 
-#: ui/main_window.py:296
-msgid "loading_themes"
-msgstr ""
+#: ui/main_window.py:277
+msgid "Refresh"
+msgstr "Aggiorna"
 
-#: ui/main_window.py:306
-msgid "error_loading_themes"
-msgstr ""
+#: ui/main_window.py:311
+msgid "Running on {} ({})"
+msgstr "In esecuzione su {} ({})"
 
-#: ui/main_window.py:322
-msgid "themes_loaded"
-msgstr ""
+#: ui/main_window.py:316
+msgid "Loading themes…"
+msgstr "Caricamento temi…"
 
-#: ui/main_window.py:344 ui/main_window.py:367 ui/main_window.py:436
-msgid "select_theme_first"
-msgstr ""
+#: ui/main_window.py:328
+#, python-brace-format
+msgid "{num} themes loaded"
+msgstr "{num} temi caricati"
 
-#: ui/main_window.py:347
-msgid "applying_theme"
-msgstr ""
+#: ui/main_window.py:354
+#, python-brace-format
+msgid "Applying {name}…"
+msgstr "Applicazione di {name}…"
 
-#: ui/main_window.py:353
-msgid "theme_applied_successfully"
-msgstr ""
+#: ui/main_window.py:363
+msgid "Success"
+msgstr "Successo"
 
-#: ui/main_window.py:355 ui/main_window.py:358
-msgid "error_applying_theme"
-msgstr ""
+#: ui/main_window.py:363
+msgid "Error"
+msgstr "Errore"
 
-#: ui/main_window.py:378
-msgid "select_theme_file"
-msgstr ""
+#: ui/main_window.py:370
+msgid "Theme is text-only"
+msgstr "Il tema è solo testo"
 
-#: ui/main_window.py:389
-msgid "plymouth_themes"
-msgstr ""
+#: ui/main_window.py:373
+msgid "Text-only Theme"
+msgstr "Tema solo testo"
 
-#: ui/main_window.py:394
-msgid "archive_files"
-msgstr ""
+#: ui/main_window.py:375
+msgid "This theme handles text only and cannot be previewed in a window."
+msgstr "Questo tema gestisce solo testo e non può essere visualizzato in anteprima in una finestra."
 
-#: ui/main_window.py:411
-msgid "installing_theme"
-msgstr ""
+#: ui/main_window.py:380
+#, python-brace-format
+msgid "Generating Preview for {name}…"
+msgstr "Generazione anteprima di {name}…"
 
-#: ui/main_window.py:419 ui/main_window.py:422
-msgid "error_installing_theme"
-msgstr ""
+#: ui/main_window.py:388
+msgid "Preview generated"
+msgstr "Anteprima generata"
 
-#: ui/main_window.py:429
-msgid "theme_installed_successfully"
-msgstr ""
+#: ui/main_window.py:391
+msgid "Error generating preview"
+msgstr "Errore durante la generazione dell'anteprima"
 
-#: ui/main_window.py:445
-msgid "confirm_remove_theme"
-msgstr ""
+#: ui/main_window.py:395
+msgid "Select Theme Bundle"
+msgstr "Seleziona pacchetto tema"
 
-#: ui/main_window.py:456
-msgid "removing_theme"
-msgstr ""
+#: ui/main_window.py:401
+msgid "Installing…"
+msgstr "Installazione…"
 
-#: ui/main_window.py:464 ui/main_window.py:467
-msgid "error_removing_theme"
-msgstr ""
-
-#: ui/main_window.py:474
-msgid "theme_removed_successfully"
-msgstr ""
+#: ui/main_window.py:420
+#, python-brace-format
+msgid "Removing {name}…"
+msgstr "Rimozione di {name}…"
