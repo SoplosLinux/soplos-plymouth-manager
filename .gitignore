@@ -27,3 +27,6 @@ plan.txt
 # Editor backups
 *.po~
 *~
+
+# VS Code
+.vscode/
