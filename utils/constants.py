@@ -41,7 +41,8 @@ INITRAMFS_COMMANDS = {
 PKEXEC_COMMAND = ['pkexec']
 
 # Logging
-LOG_FILE = PROJECT_ROOT / "plymouth-manager.log"
+LOG_DIR = Path.home() / ".cache" / "soplos-plymouth-manager"
+LOG_FILE = LOG_DIR / "plymouth-manager.log"
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 LOG_LEVEL = 'INFO'
 

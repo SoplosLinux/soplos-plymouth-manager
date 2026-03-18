@@ -33,6 +33,9 @@ def setup_logger(name: str = "plymouth-manager") -> logging.Logger:
 
     # File handler (optional)
     try:
+        # Ensure log directory exists
+        LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+        
         file_handler = logging.FileHandler(LOG_FILE)
         file_handler.setLevel(logging.DEBUG)
         file_formatter = logging.Formatter(LOG_FORMAT)

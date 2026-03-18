@@ -32,7 +32,7 @@
 /* ============================================ */
 
 /* Application Window */
-window, 
+window,
 .soplos-window,
 .soplos-welcome-window {
     background-color: @soplos_dark_bg;
@@ -45,19 +45,19 @@ notebook {
     border: none;
 }
 
-notebook > header {
+notebook>header {
     background-color: @soplos_darker_bg;
     border-bottom: 1px solid @soplos_border;
     padding: 0;
     margin: 0;
 }
 
-notebook > header tabs {
+notebook>header tabs {
     margin: 0;
     padding: 0;
 }
 
-notebook > header tab {
+notebook>header tab {
     background-color: transparent;
     color: #aaaaaa;
     padding: 10px 25px;
@@ -65,12 +65,12 @@ notebook > header tab {
     border-right: 1px solid @hover_overlay;
 }
 
-notebook > header tab:hover {
+notebook>header tab:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: white;
 }
 
-notebook > header tab:checked {
+notebook>header tab:checked {
     color: @soplos_orange;
     background-color: @soplos_dark_bg;
     border-top: 3px solid @soplos_orange;
