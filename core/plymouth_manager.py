@@ -14,6 +14,7 @@ from utils.constants import PLYMOUTH_THEME_DIRS, INITRAMFS_COMMANDS, PKEXEC_COMM
 from utils.logger import logger
 from core.environment import get_environment_detector, DesktopEnvironment, DisplayProtocol
 from core.theme_detector import get_theme_detector
+from core.i18n_manager import _
 
 class PlymouthManager:
     """
@@ -256,7 +257,7 @@ exit 0
         """Install a Plymouth theme from file (Recursive search v2.0)."""
         theme_path = Path(theme_file)
         if not theme_path.exists():
-            return False, "Theme file does not exist"
+            return False, _("Theme file does not exist")
 
         try:
             script_content = f"""#!/bin/bash
@@ -312,12 +313,12 @@ echo "SOPLOS_PROGRESS:100"
 exit 0
 """
             if self._run_script_with_progress(script_content, progress_callback):
-                return True, "Successfully installed theme"
-            return False, "Installation failed"
+                return True, _("Successfully installed theme")
+            return False, _("Installation failed")
 
         except Exception as e:
             logger.error(f"Error installing theme: {e}")
-            return False, str(e)
+            return False, _("Error installing theme: {e}").format(e=e)
 
     def remove_theme(self, theme_name: str) -> bool:
         """Remove a Plymouth theme (Dynamic protection v2.0)."""
@@ -366,13 +367,15 @@ exit 0
             return self._preview_xfce_x11(theme_name)
 
     def _preview_xfce_x11(self, theme_name: str) -> Optional[str]:
-        """Logic for XFCE/X11: Proven stable atomic block with TTY support."""
+        """
+        Logic for XFCE/X11: Uses Xephyr to ensure perfect isolation and consistency
+        across all Soplos desktops (Tyron, Tyson, Boro).
+        """
         theme_path = self._get_theme_path(theme_name)
         if not theme_path: return None
 
         output_file = str(theme_path / "preview.png")
-        display = os.environ.get('DISPLAY', ':0')
-        xauth = os.environ.get('XAUTHORITY', os.path.expanduser('~/.Xauthority'))
+        xdg_runtime = os.environ.get('XDG_RUNTIME_DIR')
 
         is_tty = False
         config_files = list(theme_path.glob("*.plymouth"))
@@ -382,52 +385,51 @@ exit 0
                     content = f.read().lower()
                     if 'modulename=tribar' in content or 'modulename=bgrt' in content:
                         is_tty = True
-                        logger.info(f"Theme {theme_name} detected as TTY-based (Terminal required)")
+                        logger.info(f"Theme {theme_name} is TTY-based. Redirecting to validated TTY strategy.")
             except: pass
 
-        shot_tool = "scrot"
-        if subprocess.run(['which', 'scrot'], capture_output=True).returncode != 0:
-            shot_tool = "xfce4-screenshooter"
-
-        terminal = self._get_available_terminal()
-        is_wayland = bool(os.environ.get('WAYLAND_DISPLAY'))
-
-        if is_tty and terminal and not is_wayland:
-            term_args = ""
-            if "xfce4-terminal" in terminal:
-                term_args = "--fullscreen --hide-menubar --hide-borders --hide-toolbar --hide-scrollbar"
-            elif "gnome-terminal" in terminal:
-                term_args = "--full-screen"
-
-            preview_cmd = f"{terminal} {term_args} -T \"Plymouth Preview\" -e \"bash -c '/usr/sbin/plymouthd --mode=boot --no-daemon; /usr/bin/plymouth --show-splash; sleep 3; /usr/bin/plymouth --quit'\" &"
-        else:
-            preview_cmd = "/usr/sbin/plymouthd --mode=boot --no-daemon --renderer=x11 >/dev/null 2>&1 &"
+        if is_tty:
+            return self._preview_tty_wayland(theme_name)
 
         script = f"""#!/bin/bash
-export DISPLAY="{display}"
-export XAUTHORITY="{xauth}"
-killall -9 plymouthd 2>/dev/null || true
-CUR_THEME=$(plymouth-set-default-theme)
-plymouth-set-default-theme "{theme_name}"
+FREE_DISPLAY=$(for i in $(seq 1 200); do ! xlsclients -display :$i >/dev/null 2>&1 && echo $i && break; done)
+[ -z "$FREE_DISPLAY" ] && FREE_DISPLAY=10
 
-{preview_cmd}
-PLY_PID=$!
-sleep 2
-plymouth --show-splash 2>/dev/null || true
+xhost +local:root >/dev/null 2>&1
+Xephyr :$FREE_DISPLAY -fullscreen -no-host-grab >/dev/null 2>&1 &
+XE_PID=$!
 sleep 2
 
-if [ "{shot_tool}" == "scrot" ]; then
-    scrot -u -o "{output_file}" || scrot -o "{output_file}"
-else
-    xfce4-screenshooter -f -s "{output_file}"
-fi
+TMP_SHOT="/tmp/plymouth_preview_$$.png"
+(sleep 15; DISPLAY=:$FREE_DISPLAY scrot "$TMP_SHOT") &
 
-plymouth --quit 2>/dev/null || true
-kill -9 $PLY_PID 2>/dev/null || true
-plymouth-set-default-theme "$CUR_THEME"
+pkexec bash -c "export DISPLAY=:$FREE_DISPLAY XDG_RUNTIME_DIR={xdg_runtime}; \\
+    killall -9 plymouthd 2>/dev/null; \\
+    CUR_THEME=\\$(plymouth-set-default-theme); \\
+    plymouth-set-default-theme \\"{theme_name}\\"; \\
+    /usr/sbin/plymouthd --mode=boot --no-daemon --renderer=x11 </dev/null >/dev/null 2>&1 & \\
+    P=\\$!; (sleep 30; kill -9 \\$P 2>/dev/null) & \\
+    sleep 5; /usr/bin/plymouth --show-splash >/dev/null 2>&1; \\
+    sleep 10; kill -9 \\$P 2>/dev/null; \\
+    [ -f '$TMP_SHOT' ] && mv '$TMP_SHOT' '{output_file}' && chmod 644 '{output_file}'; \\
+    plymouth-set-default-theme \\\"\\$CUR_THEME\\\"; stty sane"
+
+xhost -local:root >/dev/null 2>&1
+kill $XE_PID 2>/dev/null
+rm -f "$TMP_SHOT" 2>/dev/null
 """
-        return self._run_preview_script(script, output_file)
+        logger.info("Executing XFCE/X11 preview (Xephyr Fullscreen)...")
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
+            f.write(script)
+            script_path = f.name
 
+        os.chmod(script_path, 0o755)
+        subprocess.run(['bash', script_path])
+        os.remove(script_path)
+
+        if os.path.exists(output_file):
+            return output_file
+        return None
     def _preview_gnome_x11(self, theme_name: str) -> Optional[str]:
         """Logic for GNOME/X11: Similar to XFCE but separate for future tweaks."""
         return self._preview_xfce_x11(theme_name)
@@ -769,25 +771,25 @@ rm -f "$TMP_SHOT" 2>/dev/null
         path = Path(theme_path)
 
         if not path.exists():
-            return False, "Theme directory does not exist"
+            return False, _("Theme directory does not exist")
 
         if not path.is_dir():
-            return False, "Theme path is not a directory"
+            return False, _("Theme path is not a directory")
 
         config_files = list(path.glob("*.plymouth"))
         if not config_files:
-            return False, "Missing .plymouth configuration file"
+            return False, _("Missing .plymouth configuration file")
 
         script_file = path / "plymouth.script"
         if not script_file.exists():
-            return False, "Missing plymouth.script file"
+            return False, _("Missing plymouth.script file")
 
         try:
             with open(script_file, 'r', encoding='utf-8') as f:
                 content = f.read()
                 if 'Plymouth' not in content and 'plymouth' not in content.lower():
-                    return False, "Invalid plymouth.script content"
+                    return False, _("Invalid plymouth.script content")
         except (OSError, UnicodeDecodeError) as e:
-            return False, f"Error reading script file: {e}"
+            return False, _("Error reading script file: {e}").format(e=e)
 
-        return True, "Theme is valid"
+        return True, _("Theme is valid")

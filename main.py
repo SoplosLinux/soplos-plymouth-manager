@@ -13,6 +13,7 @@ from gi.repository import Gtk, GLib
 from core import create_application, run_application
 from utils.constants import APPLICATION_ID
 from utils.logger import logger
+from core.i18n_manager import _
 
 def main():
     """
@@ -47,7 +48,7 @@ def main():
                 destroy_with_parent=True,
                 message_type=Gtk.MessageType.ERROR,
                 buttons=Gtk.ButtonsType.OK,
-                text=f"Failed to start application:\n{e}"
+                text=_("Failed to start application:\n{error}").format(error=e)
             )
             dialog.run()
             dialog.destroy()
