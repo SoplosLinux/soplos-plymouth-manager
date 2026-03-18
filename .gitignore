@@ -23,3 +23,7 @@ plan.txt
 /tmp/
 .gemini/
 .antigravity/
+
+# Editor backups
+*.po~
+*~
