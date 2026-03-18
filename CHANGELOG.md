@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Complete modular architecture (core/, ui/, utils/, config/, locale/, assets/)
 - Advanced support for Wayland, GNOME, Plasma, and XFCE
 - **Unified environment detection (core/environment.py) for DE, protocol, and system theme**
-- **Advanced GNOME previews with Xephyr bridge for Wayland and xterm for TTY-based themes**
+- **Advanced KDE dark theme detection (Colors:Window parsing & LookAndFeelPackage)**
+- **Advanced GNOME & KDE previews with Xephyr bridge for Wayland and xterm for TTY-based themes**
+- **Robust single-password prompt mechanism for text/TTY themes across all Wayland sessions**
 - Intelligent detection of desktop environments and protocols (X11/Wayland)
 - Responsive Gallery: Dynamically adapts to window size without rigid column limits
 - Standard Soplos keyboard shortcuts (Ctrl+Q, F5, Ctrl+A, Ctrl+P, Ctrl+I, Delete)

@@ -114,7 +114,9 @@ Developed by Sergi Perich
 ### v2.0.0 (2026-03-18)
 - Complete refactoring to modular architecture.
 - **Unified environment detection (`core/environment.py`) for DE, protocol, and theme.**
-- **Advanced GNOME previews with Xephyr bridge and xterm for TTY themes.**
+- **Advanced GNOME and KDE previews with Xephyr bridge and xterm for TTY themes.**
+- **Robust single-password prompt mechanism for text/TTY themes across all Wayland sessions.**
+- **Advanced dark theme detection for KDE Plasma via background mathematical brightness analysis and LookAndFeelPackage checking.**
 - **Standard-compliant logging at `~/.cache/soplos-plymouth-manager/`.**
 - Full dynamic theme detection (Eliminated hardcoded names/modules).
 - Robust theme installer with deep search for nested archives.
