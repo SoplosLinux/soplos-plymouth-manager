@@ -193,11 +193,45 @@ class EnvironmentDetector:
         try:
             kde_config = Path.home() / '.config' / 'kdeglobals'
             if kde_config.exists():
-                config = configparser.ConfigParser()
-                config.read(kde_config)
+                config = configparser.ConfigParser(strict=False)
+                with open(kde_config, 'r', encoding='utf-8', errors='ignore') as f:
+                    config.read_file(f)
+
                 if 'General' in config:
                     color_scheme = config['General'].get('ColorScheme', '').lower()
                     if 'dark' in color_scheme or 'black' in color_scheme:
+                        return ThemeType.DARK
+
+                if 'KDE' in config:
+                    look_and_feel = config['KDE'].get('LookAndFeelPackage', '').lower()
+                    if 'dark' in look_and_feel or 'black' in look_and_feel:
+                        return ThemeType.DARK
+
+                if 'Colors:Window' in config:
+                    bg_color = config['Colors:Window'].get('BackgroundNormal', '')
+                    if bg_color:
+                        try:
+                            # Format: R,G,B
+                            r, g, b = map(int, bg_color.split(','))
+                            if (r + g + b) / 3 < 128:
+                                return ThemeType.DARK
+                        except ValueError:
+                            pass
+        except Exception as e:
+            logger.debug(f"Error parsing kdeglobals: {e}")
+
+        # Fallback GTK detection (KDE often syncs this)
+        try:
+            gtk_config = Path.home() / '.config' / 'gtk-3.0' / 'settings.ini'
+            if gtk_config.exists():
+                config = configparser.ConfigParser(strict=False)
+                config.read(gtk_config)
+                if 'Settings' in config:
+                    prefer_dark = config['Settings'].get('gtk-application-prefer-dark-theme', '').lower()
+                    if prefer_dark in ['1', 'true', 'yes']:
+                        return ThemeType.DARK
+                    theme_name = config['Settings'].get('gtk-theme-name', '').lower()
+                    if 'dark' in theme_name:
                         return ThemeType.DARK
         except Exception:
             pass

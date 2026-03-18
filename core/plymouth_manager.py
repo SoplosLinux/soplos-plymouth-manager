@@ -624,8 +624,69 @@ kill -9 $P 2>/dev/null || true
         return self._preview_xfce_x11(theme_name)
 
     def _preview_kde_wayland(self, theme_name: str) -> Optional[str]:
-        """Logic for KDE/Wayland: XWayland bridge or native."""
-        logger.warning("KDE Wayland preview function is being prepared...")
+        """
+        Logic for KDE/Wayland: Uses Xephyr as nested X server bridge.
+        Identical to GNOME Wayland but without dash-to-panel gsettings commands.
+        Checks for TTY themes and redirects to robust TTY strategy.
+        """
+        theme_path = self._get_theme_path(theme_name)
+        if not theme_path: return None
+
+        output_file = str(theme_path / "preview.png")
+        xdg_runtime = os.environ.get('XDG_RUNTIME_DIR')
+
+        is_tty = False
+        config_files = list(theme_path.glob("*.plymouth"))
+        if config_files:
+            try:
+                with open(config_files[0], 'r', encoding='utf-8') as f:
+                    content = f.read().lower()
+                    if 'modulename=tribar' in content or 'modulename=bgrt' in content:
+                        is_tty = True
+                        logger.info(f"Theme {theme_name} is TTY-based. Redirecting to validated TTY-Wayland strategy.")
+            except: pass
+
+        if is_tty:
+            return self._preview_tty_wayland(theme_name)
+
+        script = f"""#!/bin/bash
+FREE_DISPLAY=$(for i in $(seq 1 200); do ! xlsclients -display :$i >/dev/null 2>&1 && echo $i && break; done)
+[ -z "$FREE_DISPLAY" ] && FREE_DISPLAY=10
+
+xhost +local:root >/dev/null 2>&1
+Xephyr :$FREE_DISPLAY -fullscreen -no-host-grab >/dev/null 2>&1 &
+XE_PID=$!
+sleep 2
+
+TMP_SHOT="/tmp/plymouth_preview_$$.png"
+(sleep 15; DISPLAY=:$FREE_DISPLAY scrot "$TMP_SHOT") &
+
+pkexec bash -c "export DISPLAY=:$FREE_DISPLAY XDG_RUNTIME_DIR={xdg_runtime}; \\
+    killall -9 plymouthd 2>/dev/null; \\
+    CUR_THEME=\\$(plymouth-set-default-theme); \\
+    plymouth-set-default-theme \\"{theme_name}\\"; \\
+    /usr/sbin/plymouthd --mode=boot --no-daemon --renderer=x11 </dev/null >/dev/null 2>&1 & \\
+    P=\\$!; (sleep 30; kill -9 \\$P 2>/dev/null) & \\
+    sleep 5; /usr/bin/plymouth --show-splash >/dev/null 2>&1; \\
+    sleep 10; kill -9 \\$P 2>/dev/null; \\
+    [ -f '$TMP_SHOT' ] && mv '$TMP_SHOT' '{output_file}' && chmod 644 '{output_file}'; \\
+    plymouth-set-default-theme \\\"\\$CUR_THEME\\\"; stty sane"
+
+xhost -local:root >/dev/null 2>&1
+kill $XE_PID 2>/dev/null
+rm -f "$TMP_SHOT" 2>/dev/null
+"""
+        logger.info("Executing KDE Wayland preview (Xephyr Fullscreen)...")
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
+            f.write(script)
+            script_path = f.name
+
+        os.chmod(script_path, 0o755)
+        subprocess.run(['bash', script_path])
+        os.remove(script_path)
+
+        if os.path.exists(output_file):
+            return output_file
         return None
 
     def _run_preview_script(self, script: str, output_file: str) -> Optional[str]:
