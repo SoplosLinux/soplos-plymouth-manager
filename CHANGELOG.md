@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-2] - 2026-03-20
+
+### 🐛 Fixed
+- About dialog credits panel on KDE: the credits area now displays with an opaque dark background instead of being transparent (caused by global `scrolledwindow { background-color: transparent }` CSS rule).
+- About dialog app icon standardized to 48×48 pixels.
+
+---
+
+## [2.0.0-1] - 2026-03-20
+
+### ✨ Added
+- **F1 — About dialog**: Opens the About dialog with version, author, license and website.
+
+### 🐛 Fixed
+- **HeaderBar CSS**: Global `button {}` rule no longer overrides CSD window controls (close/minimize/maximize) on GNOME.
+
+### 🧹 Removed
+- Version subtitle from the HeaderBar.
+
+---
+
 ## [2.0.0] - 2026-03-18
 
 ### 🎉 Added

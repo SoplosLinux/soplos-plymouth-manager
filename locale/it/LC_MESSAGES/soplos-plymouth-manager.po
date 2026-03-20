@@ -157,3 +157,6 @@ msgstr "Installazione…"
 #, python-brace-format
 msgid "Removing {name}…"
 msgstr "Rimozione di {name}…"
+
+msgid "Plymouth boot splash theme manager for Soplos Linux."
+msgstr "Gestore dei temi di avvio Plymouth per Soplos Linux."

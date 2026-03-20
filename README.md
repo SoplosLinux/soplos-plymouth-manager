@@ -1,7 +1,7 @@
 # Soplos Plymouth Manager
 
 [![License: GPL-3.0+](https://img.shields.io/badge/License-GPL--3.0%2B-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)]()
+[![Version](https://img.shields.io/badge/version-2.0.0--2-green.svg)]()
 
 Graphical Plymouth theme manager for Soplos Linux compatible with XFCE, Plasma and GNOME.
 
@@ -110,6 +110,15 @@ Developed by Sergi Perich
 - [Contact](mailto:info@soploslinux.com)
 
 ## 📦 Versions
+
+### v2.0.0-2 (2026-03-20)
+- Fixed: About dialog credits panel on KDE now displays with an opaque dark background instead of being transparent.
+- About dialog app icon standardized to 48×48 pixels.
+
+### v2.0.0-1 (2026-03-20)
+- **F1 — About dialog**: Press F1 to open the About dialog with version, author, license and website.
+- **HeaderBar fix**: CSD window controls no longer affected by the global button CSS rule on GNOME.
+- Removed version subtitle from the HeaderBar.
 
 ### v2.0.0 (2026-03-18)
 - Complete refactoring to modular architecture.

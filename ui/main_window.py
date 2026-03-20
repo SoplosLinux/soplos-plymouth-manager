@@ -159,7 +159,6 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
         header = Gtk.HeaderBar()
         header.set_show_close_button(True)
         header.set_title(_(APPLICATION_NAME))
-        header.set_subtitle(f"v{APPLICATION_VERSION}")
         header.set_decoration_layout("menu:minimize,maximize,close")
         header.get_style_context().add_class('titlebar')
         
@@ -194,6 +193,9 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
         
         # Action: Remove
         add_shortcut('Delete', None, self._on_remove_theme)
+
+        # F1 — About dialog
+        add_shortcut('F1', None, self._show_about)
 
     def _setup_ui(self):
         """Hierarchy: VBox -> Content -> Actions Area -> ProgressRevealer -> Footer"""
@@ -443,6 +445,79 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
 
     def _on_theme_toggle_demo(self, btn):
         logger.info("Theme toggle clicked")
+
+    def _show_about(self, *args):
+        dialog = Gtk.AboutDialog()
+        dialog.set_transient_for(self)
+        dialog.set_modal(True)
+        dialog.set_program_name(_(APPLICATION_NAME))
+        dialog.set_version(APPLICATION_VERSION)
+        dialog.set_comments(_("Plymouth boot splash theme manager for Soplos Linux."))
+        dialog.set_website("https://soplos.org")
+        dialog.set_website_label("soplos.org")
+        dialog.set_authors(["Sergi Perich <info@soploslinux.com>"])
+        dialog.set_license_type(Gtk.License.GPL_3_0)
+        icon_path = Path(__file__).parent.parent / 'assets' / 'icons' / '64x64' / 'org.soplos.plymouthmanager.png'
+        if icon_path.exists():
+            dialog.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_scale(str(icon_path), 48, 48, True))
+        _about_css = Gtk.CssProvider()
+        _about_css.load_from_data(b"""
+            dialog, messagedialog {
+                background-color: #2b2b2b;
+                color: #ffffff;
+            }
+            dialog .background, messagedialog .background {
+                background-color: #2b2b2b;
+                color: #ffffff;
+            }
+            dialog > box, messagedialog > box {
+                background-color: #2b2b2b;
+            }
+            dialog label, messagedialog label {
+                color: #ffffff;
+            }
+            dialog button, messagedialog button {
+                background-image: none;
+                background-color: #333333;
+                color: #ffffff;
+                border: 1px solid #3c3c3c;
+                border-radius: 4px;
+                padding: 6px 14px;
+                box-shadow: none;
+            }
+            dialog button:hover, messagedialog button:hover {
+                background-color: #444444;
+                border-color: #ff8800;
+            }
+            dialog stackswitcher button {
+                border-radius: 100px;
+                background-color: #2b2b2b;
+                background-image: none;
+                border: 1px solid #3c3c3c;
+                font-weight: normal;
+                padding: 4px 16px;
+                box-shadow: none;
+                color: #ffffff;
+            }
+            dialog stackswitcher button:hover {
+                background-color: #444444;
+                border-color: #ff8800;
+            }
+            dialog stackswitcher button:checked {
+                background-color: #444444;
+                color: #ffffff;
+            }
+            dialog scrolledwindow,
+            dialog scrolledwindow viewport {
+                background-color: #2b2b2b;
+            }
+        """)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(), _about_css,
+            Gtk.STYLE_PROVIDER_PRIORITY_USER
+        )
+        dialog.run()
+        dialog.destroy()
 
     def _on_configure_event(self, widget, event):
         self.config.set('window_width', event.width)

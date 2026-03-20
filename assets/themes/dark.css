@@ -39,6 +39,24 @@ window,
     color: @soplos_light_text;
 }
 
+/* Dialogs */
+dialog,
+messagedialog {
+    background-color: @soplos_dark_bg;
+    color: @soplos_light_text;
+}
+
+dialog .background,
+messagedialog .background {
+    background-color: @soplos_dark_bg;
+    color: @soplos_light_text;
+}
+
+dialog>box,
+messagedialog>box {
+    background-color: @soplos_dark_bg;
+}
+
 /* Notebook and Tabs - STANDARDIZED Soplos v2.0 */
 notebook {
     background-color: @soplos_darker_bg;
@@ -114,6 +132,27 @@ headerbar button.titlebutton:hover {
 headerbar button.titlebutton.close:hover {
     background-color: @soplos_error;
     color: white;
+}
+
+/* StackSwitcher — About dialog tabs (higher specificity wins over button {}) */
+stackswitcher button {
+    border-radius: 100px;
+    background-color: @soplos_dark_bg;
+    background-image: none;
+    border: 1px solid @soplos_border;
+    font-weight: normal;
+    padding: 4px 16px;
+    box-shadow: none;
+    color: @soplos_light_text;
+}
+
+stackswitcher button:hover {
+    background-color: #444444;
+    border-color: @soplos_orange;
+}
+
+stackswitcher button:checked {
+    background-color: #444444;
 }
 
 /* Buttons */
