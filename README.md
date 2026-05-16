@@ -111,6 +111,9 @@ Developed by Sergi Perich
 
 ## 📦 Versions
 
+### v2.0.0-3 (2026-04-30)
+- Simplified the footer UI text to match the modern Soplos standard layout (`XFCE · X11`).
+
 ### v2.0.0-2 (2026-03-20)
 - Fixed: About dialog credits panel on KDE now displays with an opaque dark background instead of being transparent.
 - About dialog app icon standardized to 48×48 pixels.

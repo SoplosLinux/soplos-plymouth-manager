@@ -305,12 +305,12 @@ class PlymouthThemeManager(Gtk.ApplicationWindow):
         self._update_footer_info()
 
     def _update_footer_info(self):
-        """Update footer matching GRUB Editor style: 'Running on XFCE (X11)'"""
+        """Update footer matching Soplos Welcome style: 'XFCE · X11'"""
         env_detector = self.application.get_theme_detector()
         info = env_detector.get_environment_info()
         desktop = info.get('desktop', 'unknown').upper()
         protocol = info.get('protocol', 'unknown').upper()
-        self.status_label.set_text(_("Running on {} ({})").format(desktop, protocol))
+        self.status_label.set_text(f"{desktop}  ·  {protocol}")
 
     # --- Backend Threaded Jobs ---
 
