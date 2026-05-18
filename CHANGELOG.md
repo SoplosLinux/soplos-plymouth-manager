@@ -5,14 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0-3] - 2026-04-30
+## [2.0.0-4] - 2026-05-18
+
+### 📝 Docs
+- Documentation-only release: version history corrected across the release page, CHANGELOG, README and metainfo. All timestamps updated to match the forensic audit of the official package archive.
+
+---
+
+## [2.0.0-3] - 2026-05-16
 
 ### 💄 Changed
 - Simplified the footer UI text to match the modern Soplos standard layout (`XFCE · X11`).
 
 ---
 
-## [2.0.0-2] - 2026-03-20
+## [2.0.0-2] - 2026-04-21
 
 ### 🐛 Fixed
 - About dialog credits panel on KDE: the credits area now displays with an opaque dark background instead of being transparent (caused by global `scrolledwindow { background-color: transparent }` CSS rule).
@@ -70,13 +77,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed progress bar stuck at 20% during long operations**
 - **Fixed installation issues with nested folder structures in theme bundles**
 
-## [1.0.4] - 2025-07-27
+## [1.0.4] - 2025-05-07
 
 ### 🎨 Changed
 - Program icon changed.
 - Developer updated to Sergi Perich.
 
-## [1.0.3] - 2025-07-18
+## [1.0.3] - 2025-05-06
 
 ### 🛠️ Improved - Metainfo and AppStream/DEP-11 compatibility
 - Metainfo update for AppStream/DEP-11 compliance.
