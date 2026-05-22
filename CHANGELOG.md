@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-5] - 2026-05-22
+
+### 📝 Docs
+- Added comprehensive historical documentation for Legacy 1.x branches (Tyron and Tyson) in CHANGELOG and README.
+- Cleaned up obsolete AppStream metadata elements in metainfo.xml.
+
+---
+
 ## [2.0.0-4] - 2026-05-18
 
 ### 📝 Docs
@@ -77,28 +85,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed progress bar stuck at 20% during long operations**
 - **Fixed installation issues with nested folder structures in theme bundles**
 
-## [1.0.4] - 2025-05-07
+---
 
-### 🎨 Changed
+## Legacy 1.x — Prior to Unification
+
+Before version 2.0.0, the project existed as two separate branches:
+
+- **Tyron** (XFCE + X11): versions 1.0.0 – 1.0.6, released April–May 2025
+- **Tyson** (Plasma 6 + Wayland): versions 1.0.0 – 1.0.5, released May–July 2025
+
+Both branches were merged and unified into version 2.0.0 (March 2026).
+
+---
+
+### Tyron branch
+
+#### [1.0.6] - 2025-05-08
+
+##### 🐛 Fixed
+- Stability and compatibility: additional fixes and improvements for the Tyron environment.
+
+#### [1.0.5] - 2025-05-08
+
+##### 🐛 Fixed
+- Internal cleanup and minor corrections for the Tyron build.
+
+#### [1.0.4] - 2025-05-07
+
+##### 🎨 Changed
 - Program icon changed.
 - Developer updated to Sergi Perich.
 
-## [1.0.3] - 2025-05-06
+#### [1.0.3] - 2025-05-06
 
-### 🛠️ Improved - Metainfo and AppStream/DEP-11 compatibility
+##### 🛠️ Improved
 - Metainfo update for AppStream/DEP-11 compliance.
 - Renamed screenshots to screenshot1.png, screenshot2.png, etc.
-- Minor documentation and metadata improvements.
-- No functional changes.
+- Minor documentation and metadata improvements. No functional changes.
 
-## [1.0.0] - 2025-05-08
+#### [1.0.2] - 2025-05-02
 
-### 🎉 Initial Release
+##### 🔧 Changed
+- Packaging format updated to standard `_all.deb` structure.
+
+#### [1.0.1] - 2025-05-02
+
+##### 🌟 Improved
+- Screenshots and app icons added (48×48, 64×64, 128×128).
+- AppStream metainfo added.
+
+#### [1.0.0] - 2025-04-13
+
+##### 🎉 Initial Tyron Release
 - Graphical interface for managing Plymouth themes.
-- Preview, install, and apply themes.
+- Preview, install, and apply themes with one click.
 - Advanced configuration.
 - Multi-language support (8 languages).
 - Compatible with Soplos Linux and derivatives.
+
+---
+
+### Tyson branch
+
+#### [1.0.5] - 2025-07-18
+
+##### 🌟 Improved
+- **Metainfo finalized** for AppStream/DEP-11 compliance.
+- **Program icons** added in 48×48, 64×64 and 128×128 for software center compatibility.
+- Program icon updated.
+
+#### [1.0.4] - 2025-07-15
+
+##### 🌟 Improved
+- **Metainfo finalized** for AppStream/DEP-11 compliance.
+- **Program icons** added in 48×48, 64×64 and 128×128 for software center compatibility.
+- Minor structure and tag improvements.
+
+#### [1.0.3] - 2025-07-15
+
+##### 🐛 Fixed
+- **Metainfo corrections:** Final fixes to ensure full visibility in software centers.
+- Validated across Plasma Discover, GNOME Software and other AppStream-compatible centers.
+
+#### [1.0.2] - 2025-06-18
+
+##### ✨ Added
+- **Dynamic translation system** with on-demand loading.
+- **8 languages fully supported:** ES, EN, FR, PT, DE, IT, RU, RO.
+- **Automatic language detection** based on `$LANG` with English fallback.
+
+#### [1.0.1] - 2025-06-15
+
+##### 🌟 Improved
+- **System theme detection:** Automatic dark/light theme detection.
+- **Wayland improvements:** Better compatibility with Plasma 6 Wayland sessions.
+
+#### [1.0.0] - 2025-05-09
+
+##### 🎉 Initial Tyson Release
+- Complete graphical Plymouth theme manager with intuitive GTK3 interface.
+- Preview, install, and apply themes with one click.
+- Advanced configuration, automatic OS detection, automatic backup system.
+- Secure `update-initramfs` integration with minimum privileges.
+- Keyboard shortcuts and configuration validation.
 
 ---
 

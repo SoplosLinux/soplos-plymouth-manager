@@ -1,7 +1,7 @@
 # Soplos Plymouth Manager
 
 [![License: GPL-3.0+](https://img.shields.io/badge/License-GPL--3.0%2B-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-2.0.0--4-green.svg)]()
+[![Version](https://img.shields.io/badge/version-2.0.0--5-green.svg)]()
 
 Graphical Plymouth theme manager for Soplos Linux compatible with XFCE, Plasma and GNOME.
 
@@ -111,6 +111,10 @@ Developed by Sergi Perich
 
 ## 📦 Versions
 
+### v2.0.0-5 (2026-05-22)
+- Added comprehensive historical documentation for Legacy 1.x branches (Tyron and Tyson) in CHANGELOG and README.
+- Cleaned up obsolete AppStream metadata elements in metainfo.xml.
+
 ### v2.0.0-4 (2026-05-18)
 - Documentation-only release: version history corrected across the release page, CHANGELOG, README and metainfo. All timestamps updated to match the forensic audit of the official package archive.
 
@@ -140,13 +144,64 @@ Developed by Sergi Perich
 - Responsive interface and standard Soplos keyboard shortcuts.
 - Native Dracut support.
 
-### v1.0.4 (2025-05-07)
-- Program icon changed.
+---
 
-### v1.0.3 (2025-05-06)
+## Legacy 1.x — Tyron branch (XFCE + X11)
+
+### 🆕 New in version 1.0.6 (May 8, 2025)
+- Stability and compatibility: additional fixes and improvements for the Tyron environment.
+
+### 🆕 New in version 1.0.5 (May 8, 2025)
+- Internal cleanup and minor corrections for the Tyron build.
+
+### 🆕 New in version 1.0.4 (May 7, 2025)
+- Program icon changed.
+- Developer updated to Sergi Perich.
+
+### 🆕 New in version 1.0.3 (May 6, 2025)
 - Metainfo update for AppStream/DEP-11 compliance.
 - Renamed screenshots to screenshot1.png, screenshot2.png, etc.
-- Minor documentation and metadata improvements.
+- Minor documentation and metadata improvements. No functional changes.
 
-### v1.0.0 (2025-05-08)
-- Initial version
+### 🆕 New in version 1.0.2 (May 2, 2025)
+- Packaging format updated to standard `_all.deb` structure.
+
+### 🆕 New in version 1.0.1 (May 2, 2025)
+- Screenshots and app icons added (48×48, 64×64, 128×128).
+- AppStream metainfo added.
+
+### 🆕 New in version 1.0.0 (April 13, 2025)
+- Initial Tyron release — complete GTK3 Plymouth theme manager.
+- Preview, install, and apply themes.
+- Advanced configuration, multi-language support (8 languages).
+
+---
+
+## Legacy 1.x — Tyson branch (Plasma 6 + Wayland)
+
+### 🆕 New in version 1.0.5 (July 18, 2025)
+- Metainfo finalized for AppStream/DEP-11 compliance.
+- Program icons added in 48×48, 64×64 and 128×128 for software center compatibility.
+- Program icon updated.
+
+### 🆕 New in version 1.0.4 (July 15, 2025)
+- Metainfo finalized for AppStream/DEP-11 compliance.
+- Program icons added in 48×48, 64×64 and 128×128 for software center compatibility.
+- Minor structure and tag improvements.
+
+### 🆕 New in version 1.0.3 (July 15, 2025)
+- Final metainfo corrections to ensure full visibility in software centers.
+- Validated across Plasma Discover, GNOME Software and other AppStream-compatible centers.
+
+### 🆕 New in version 1.0.2 (June 18, 2025)
+- Dynamic translation system with on-demand loading.
+- 8 languages fully supported (ES, EN, FR, PT, DE, IT, RU, RO) with automatic `$LANG` detection.
+
+### 🆕 New in version 1.0.1 (June 15, 2025)
+- System theme detection: automatic dark/light theme detection.
+- Wayland improvements: better compatibility with Plasma 6 Wayland sessions.
+
+### 🆕 New in version 1.0.0 (May 9, 2025)
+- Initial Tyson release — complete GTK3 Plymouth theme manager.
+- Preview, install, and apply themes.
+- Secure `update-initramfs` integration, keyboard shortcuts and validation.
