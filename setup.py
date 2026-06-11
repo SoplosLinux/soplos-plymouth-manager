@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="soplos-plymouth-manager",
-    version="2.0.0-5",
+    version="2.0.0-6",
     author="Sergi Perich",
     author_email="info@soploslinux.com",
     description="Graphical Plymouth theme manager for Soplos Linux",

@@ -258,8 +258,8 @@ switch slider {
 
 .theme-card-selected {
     background-color: @soplos_dark_bg;
-    border: 2px solid @soplos_orange;
-    box-shadow: 0 0 8px alpha(@soplos_orange, 0.3);
+    border: 1px solid @soplos_orange;
+    box-shadow: none;
 }
 
 .theme-preview-box {
@@ -297,5 +297,9 @@ label {
 /* Scrolled Windows */
 scrolledwindow,
 scrolledwindow viewport {
+    background-color: transparent;
+}
+
+flowboxchild:selected {
     background-color: transparent;
 }
