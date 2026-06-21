@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0-7] - 2026-06-21
 
 ### Fixed
-- Polkit dependency reduced to just `polkit`. Removed obsolete `policykit-1-gnome` and `policykit-1` alternatives that no longer exist in current Debian.
+- Polkit dependency updated to `polkitd`, the correct package name in current Debian. Removed obsolete `policykit-1-gnome`, `polkit` and `policykit-1` alternatives.
 
 ---
 
