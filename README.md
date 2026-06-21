@@ -1,7 +1,7 @@
 # Soplos Plymouth Manager
 
 [![License: GPL-3.0+](https://img.shields.io/badge/License-GPL--3.0%2B-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-2.0.0--6-green.svg)]()
+[![Version](https://img.shields.io/badge/version-2.0.0--7-green.svg)]()
 
 Graphical Plymouth theme manager for Soplos Linux compatible with XFCE, Plasma and GNOME.
 
